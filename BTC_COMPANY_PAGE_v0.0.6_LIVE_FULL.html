@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SCINTILLA · BTC · LIVE FULL</title>
+<style>
+:root{--bg:#0A0A0F;--line:#1A1A2A;--line2:#252538;--crk:#00D4FF;--coin:#8B5CF6;--amber:#F59E0B;--sv1:#00FFA3;--sv2:#C8FF00;--sv3:#FFE500;--sv4:#FF8A00;--sv5:#FF3060;--ink:#E8E8F0;--ink2:#A0A0C0;--ink3:#7A7A95;--dim:#4A4A6A;--mute:#2A2A3A;--es:rgba(0,212,255,.22);--em:rgba(0,212,255,.18);--mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;--sans:ui-sans-serif,-apple-system,"Helvetica Neue",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{max-width:900px;margin:0 auto;padding:18px 15px 50px;font-size:12px}
+@keyframes breathe{0%,100%{filter:drop-shadow(0 0 2px rgba(0,212,255,.5))}50%{filter:drop-shadow(0 0 5px rgba(0,212,255,.75))}}
+@keyframes whisper{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.stamp{font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:12px}
+.head{border:0.8px solid var(--em);padding:13px 16px;margin-bottom:10px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.br{animation:breathe 4.2s ease-in-out infinite}
+.tk{font-family:var(--sans);font-weight:700;font-size:18px}
+.live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;letter-spacing:.18em;color:var(--sv1);text-transform:uppercase}
+.live i{width:6px;height:6px;border-radius:50%;background:var(--sv1);box-shadow:0 0 6px var(--sv1);animation:whisper 1.6s infinite}
+.id{margin-left:auto;text-align:right;font-family:var(--mono)}.id .px{font-size:20px;font-weight:700}.id .ch{font-size:9px;color:var(--ink3)}
+.statline{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:9px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.statline b{color:var(--ink2)}
+.banner{border:0.8px solid var(--es);padding:11px 15px;margin-bottom:14px;display:flex;align-items:center;gap:12px;font-family:var(--mono)}
+.banner .lab{font-size:8px;letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.banner .state{font-size:14px;font-weight:700;letter-spacing:.12em}
+.banner .rv{margin-left:auto;font-size:10px;color:var(--ink2)}
+.sechead{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.sechead .n{font-family:var(--mono);font-size:7.5px;color:var(--dim);letter-spacing:.2em}
+.sechead .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--ink);text-transform:uppercase}
+.sechead .rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,.18),transparent)}
+.sechead .meta{font-family:var(--mono);font-size:8px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase}
+.sechead .meta.lv{color:var(--sv1)}
+.zone{border:0.8px solid var(--es);padding:15px;margin-bottom:22px}
+#ch{height:380px;width:100%}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-top:9px}
+.leg i{display:inline-block;width:13px;height:3px;border-radius:2px;vertical-align:2px;margin-right:4px}
+.chips{display:flex;gap:12px;flex-wrap:wrap}
+.chip{border:0.8px solid var(--line);border-radius:3px;padding:9px 13px;font-family:var(--mono);min-width:110px}
+.chip .k{font-size:7.5px;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase}
+.chip .v{font-size:16px;font-weight:700;margin-top:4px}
+.chip .s{font-size:7.5px;color:var(--dim);margin-top:3px;text-transform:uppercase}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}@media(max-width:560px){.stats{grid-template-columns:1fr}}
+.st{display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.6px dashed var(--line);font-family:var(--mono);font-size:9.5px}.st .k{color:var(--ink3)}.st .v{color:var(--ink);font-weight:600}
+.dialwrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.dialbig{font-family:var(--mono);font-weight:700;font-size:38px;line-height:1}
+.dialreg{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-top:5px}
+.meter{flex:1;min-width:200px}
+.mtrack{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,#FF3060,#5a2030 28%,#2A2A3A 50%,#1f4a36 72%,#00FFA3)}
+.mneedle{position:absolute;top:-5px;width:3px;height:20px;border-radius:2px;background:#fff;box-shadow:0 0 9px #fff;transform:translateX(-50%)}
+.mlbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:7px;text-transform:uppercase}
+.lad{margin-bottom:16px}
+.ladh{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.ladh .nm{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase;font-weight:700}
+.ladh .desc{font-family:var(--mono);font-size:7.5px;color:var(--ink3)}
+.ladh .val{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:700}
+.lrow{display:flex;align-items:center;gap:7px;margin-bottom:2.5px}
+.lrow .tf2{width:34px;flex:none;font-family:var(--mono);font-size:7px;color:var(--ink2);text-transform:uppercase;text-align:right}
+.cells{flex:1;display:flex;gap:1.5px;height:9px;min-width:0}.cells.v{height:13px}
+.cell{flex:1;border-radius:1px}.cell.g{background:var(--sv1)}.cell.r{background:var(--sv5)}.cell.split{background:repeating-linear-gradient(45deg,#1f2a24,#1f2a24 2px,#142019 2px,#142019 4px)}
+.ladx{font-family:var(--mono);font-size:6.5px;color:var(--dim);text-transform:uppercase;margin:4px 0 0 41px;display:flex;justify-content:space-between}
+.lleg{display:flex;gap:14px;font-family:var(--mono);font-size:7px;color:var(--ink3);text-transform:uppercase;margin-top:6px}
+.lleg i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.rsibox{position:relative;height:180px}.rsibox svg{width:100%;height:100%;display:block}
+.rsileg{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:7.5px;color:var(--ink3);margin-top:9px}
+.rsileg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:2px;margin-right:4px}
+.readtxt{font-family:var(--mono);font-size:10.5px;color:var(--ink2);line-height:1.85}.readtxt b{color:var(--ink)}.readtxt .g{color:var(--sv1)}.readtxt .r{color:var(--sv5)}
+.pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.bigpill{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:4px 11px;border-radius:3px}
+.bigpill.amber{border:1px solid var(--amber);color:var(--amber)}.bigpill.crk{border:1px solid var(--crk);color:var(--crk)}.bigpill.red{border:1px solid var(--sv5);color:var(--sv5)}
+.al{display:grid;grid-template-columns:9px 54px 1fr auto;gap:10px;align-items:center;padding:9px 4px;border-bottom:0.6px solid var(--line);font-family:var(--mono)}.al:last-child{border-bottom:none}.al .dot{width:7px;height:7px;border-radius:50%}.al .tkr{font-weight:700;font-size:11px;color:var(--ink)}.al .msg{font-size:9px;color:var(--ink3);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.al .z{font-size:9px;font-weight:700}
+.foot{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--dim);text-align:center;margin-top:16px;text-transform:uppercase}
+.err{color:var(--sv5);font-family:var(--mono);font-size:9px}
+</style>
+</head>
+<body>
+<div class="stamp"><span>SCINTILLA · BTCUSD · COMPANY PAGE</span><span>v0.0.6 · LIVE + FULL</span></div>
+
+<div class="head">
+  <svg class="br" width="20" height="20" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="4" fill="#00D4FF"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85" transform="rotate(120 48 48)"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".70" transform="rotate(240 48 48)"/></svg>
+  <span class="tk">₿ BTC</span>
+  <span class="live"><i></i>LIVE · price ticks realtime · panels refresh 60s</span>
+  <span class="id"><div class="px" id="px">—</div><div class="ch" id="upd">connecting…</div></span>
+</div>
+<div class="statline" id="stats"><span>loading 24h stats…</span></div>
+
+<div class="banner"><span class="lab">Volume</span><span class="state" id="vstate" style="color:var(--dim)">—</span><span class="rv" id="rvol">RVOL —</span></div>
+
+<div class="sechead"><span class="n">01</span><span class="t">Live Chart</span><span class="rule"></span><span class="meta lv">LIVE · 1H candles · coinbase · EMA 21/50</span></div>
+<div class="zone">
+  <div id="ch"></div>
+  <div class="leg"><span><i style="background:#00FFA3"></i>up</span><span><i style="background:#FF3060"></i>down</span><span><i style="background:#C8FF00"></i>EMA 21</span><span><i style="background:#00D4FF"></i>EMA 50</span><span><i style="background:#3A3A52"></i>volume pane</span><span style="color:var(--dim)">drag · zoom · crosshair</span></div>
+</div>
+
+<div class="sechead"><span class="n">02</span><span class="t">Live Momentum</span><span class="rule"></span><span class="meta lv">LIVE · computed from the feed</span></div>
+<div class="zone"><div class="chips">
+  <div class="chip"><div class="k">RSI · 1H</div><div class="v" id="rsi1h">—</div><div class="s" id="rsi1hs">live</div></div>
+  <div class="chip"><div class="k">RSI · 1D</div><div class="v" id="rsi1d">—</div><div class="s" id="rsi1ds">live</div></div>
+  <div class="chip"><div class="k">24h Volume</div><div class="v" id="v24">—</div><div class="s">coinbase</div></div>
+  <div class="chip"><div class="k">Day Range</div><div class="v" id="rng" style="font-size:11px">—</div><div class="s">live</div></div>
+</div></div>
+
+<div class="sechead"><span class="n">03</span><span class="t">Key Stats</span><span class="rule"></span><span class="meta">snapshot · CMC · wire next</span></div>
+<div class="zone"><div class="stats">
+  <div class="st"><span class="k">Market Cap</span><span class="v">$1.228T</span></div><div class="st"><span class="k">Fully Diluted</span><span class="v">$1.29T</span></div>
+  <div class="st"><span class="k">Vol / Mkt Cap</span><span class="v">5.87%</span></div><div class="st"><span class="k">52-Wk Range</span><span class="v">60,074 – 126,198</span></div>
+  <div class="st"><span class="k">All-Time High</span><span class="v">126,198</span></div><div class="st"><span class="k">All-Time Low</span><span class="v">171.51</span></div>
+  <div class="st"><span class="k">Circ Supply</span><span class="v">20.04M</span></div><div class="st"><span class="k">Max Supply</span><span class="v">21.00M</span></div>
+</div></div>
+
+<div class="sechead"><span class="n">04</span><span class="t">Geiger Dial · composite</span><span class="rule"></span><span class="meta">snapshot · supabase wire next</span></div>
+<div class="zone"><div class="dialwrap">
+  <div><div class="dialbig" style="color:#FF3060;text-shadow:0 0 16px rgba(255,48,96,.5)">−0.74</div><div class="dialreg" style="color:#FF3060">BEAR · STRONG</div></div>
+  <div class="meter"><div class="mtrack"><div class="mneedle" id="needle"></div></div><div class="mlbl"><span>−1 strong bear</span><span>0 chop</span><span>+1 strong bull</span></div></div>
+</div></div>
+
+<div class="sechead"><span class="n">05</span><span class="t">Gradient Ladders · all 9 timeframes</span><span class="rule"></span><span class="meta">snapshot · 15m → 1W</span></div>
+<div class="zone" id="ladders"></div>
+<div class="lleg" style="margin:-12px 0 22px"><span><i style="background:#00FFA3"></i>bullish this TF</span><span><i style="background:#FF3060"></i>bearish this TF</span><span><i style="background:repeating-linear-gradient(45deg,#1f2a24,#1f2a24 2px,#142019 2px,#142019 4px)"></i>NET split</span></span></div>
+
+<div class="sechead"><span class="n">06</span><span class="t">RSI Rainbow · by timeframe</span><span class="rule"></span><span class="meta">snapshot · pine colors · 30/50/70</span></div>
+<div class="zone">
+  <div class="rsibox"><svg id="rsi" viewBox="0 0 400 180" preserveAspectRatio="none"></svg></div>
+  <div class="rsileg" id="rsileg"></div>
+</div>
+
+<div class="sechead"><span class="n">07</span><span class="t">Read</span><span class="rule"></span><span class="meta">snapshot · 2026-06-05</span></div>
+<div class="zone">
+  <div class="readtxt">Bitcoin is in a <b>powerful, intact downtrend</b>. Price sits below the 21-period EMA on <b>every</b> timeframe — 1H (61,573), 4H (64,091) and 1D (71,248) — and is trading on the <r>year low of 60,074</r>, more than 50% beneath the all-time high of 126,198. The composite <b>Geiger reads −0.74 (BEAR · STRONG)</b>: trend, price and volume gradients deeply negative while volatility expands, so the move still has force. <b>But momentum is stretched to a historic extreme</b> — Daily RSI 16.4 (0th percentile), with 3H, 4H and 3D oversold too. Read the ladders bottom-up: the slow timeframes (1D, 3D, 1W) are uniformly red, but the <g>15m, 30m and 1H have flipped green</g> — a short-term bounce firing under a falling trend. That split is the tell. <b>"Sell the rip until proven otherwise,"</b> watching for the divergence — price lower low, RSI higher low — that confirms a tradable bottom.</div>
+  <div class="pills"><span class="bigpill amber">STRONG TREND</span><span class="bigpill crk">OVERSOLD EXTREME</span><span class="bigpill red">AT YEAR LOW</span></div>
+</div>
+
+<div class="sechead"><span class="n">08</span><span class="t">Crypto Cohort · Alerts</span><span class="rule"></span><span class="meta">snapshot · alert_log wire next</span></div>
+<div class="zone" id="alerts"></div>
+
+<div class="foot">price ticks realtime (websocket) · chart + momentum refresh 60s · sections marked SNAPSHOT light up with the supabase wire-in · v0.0.6 · never less than the version before</div>
+
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+var API='https://api.exchange.coinbase.com/products/BTC-USD';
+var chart,cs,e21s,e50s,vols,N=40;
+function ema(v,p){var k=2/(p+1),o=[],pr;v.forEach(function(x,i){pr=i?(x*k+pr*(1-k)):x;o.push(pr);});return o;}
+function rsi(cl,p){p=p||14;if(cl.length<p+1)return null;var g=0,l=0;for(var i=1;i<=p;i++){var d=cl[i]-cl[i-1];if(d>0)g+=d;else l-=d;}g/=p;l/=p;for(var i=p+1;i<cl.length;i++){var d=cl[i]-cl[i-1];g=(g*(p-1)+(d>0?d:0))/p;l=(l*(p-1)+(d<0?-d:0))/p;}return l===0?100:100-100/(1+g/l);}
+function fmt(n){return n>=1e9?('$'+(n/1e9).toFixed(2)+'B'):n>=1e6?('$'+(n/1e6).toFixed(1)+'M'):('$'+Math.round(n).toLocaleString());}
+document.getElementById('needle').style.left=(((-0.74)+1)/2*100).toFixed(1)+'%';
+function initChart(){var el=document.getElementById('ch');
+ chart=LightweightCharts.createChart(el,{layout:{background:{color:'#0A0A0F'},textColor:'#A0A0C0',fontFamily:'SF Mono, ui-monospace, monospace',fontSize:10},grid:{vertLines:{color:'rgba(26,26,42,.55)'},horzLines:{color:'rgba(26,26,42,.55)'}},rightPriceScale:{borderColor:'#1A1A2A'},timeScale:{borderColor:'#1A1A2A',timeVisible:true,secondsVisible:false},crosshair:{vertLine:{color:'#00D4FF',width:1,labelBackgroundColor:'#0D1118'},horzLine:{color:'#00D4FF',width:1,labelBackgroundColor:'#0D1118'}},width:el.clientWidth,height:380});
+ cs=chart.addCandlestickSeries({upColor:'#00FFA3',downColor:'#FF3060',wickUpColor:'#00FFA3',wickDownColor:'#FF3060',borderVisible:false});
+ e21s=chart.addLineSeries({color:'#C8FF00',lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+ e50s=chart.addLineSeries({color:'#00D4FF',lineWidth:2,priceLineVisible:false,lastValueVisible:false});
+ vols=chart.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:''});
+ vols.priceScale().applyOptions({scaleMargins:{top:0.82,bottom:0}});
+ window.addEventListener('resize',function(){chart.applyOptions({width:el.clientWidth});});}
+async function load(){
+ try{
+  var r=await fetch(API+'/candles?granularity=3600');var j=await r.json();
+  var bars=j.map(function(c){return {time:c[0],low:c[1],high:c[2],open:c[3],close:c[4],vol:c[5]};}).sort(function(a,b){return a.time-b.time;});
+  var closes=bars.map(function(b){return b.close;});
+  cs.setData(bars.map(function(b){return {time:b.time,open:b.open,high:b.high,low:b.low,close:b.close};}));
+  var E21=ema(closes,21),E50=ema(closes,50);
+  e21s.setData(bars.map(function(b,i){return {time:b.time,value:E21[i]};}));
+  e50s.setData(bars.map(function(b,i){return {time:b.time,value:E50[i]};}));
+  vols.setData(bars.map(function(b){return {time:b.time,value:b.vol,color:(b.close>=b.open)?'rgba(0,255,163,.35)':'rgba(255,48,96,.35)'};}));
+  var n=bars.length,last=bars[n-1],prev=bars.slice(n-21,n-1);
+  var avg=prev.reduce(function(s,b){return s+b.vol;},0)/prev.length;var rv=last.vol/avg;
+  var st=document.getElementById('vstate');document.getElementById('rvol').textContent='RVOL '+rv.toFixed(2)+'× vs 20-bar avg · 1H';
+  var s,c,bl=false;
+  if(rv<0.7){s='THIN';c='#4A4A6A';}else if(rv<1.5){s='NORMAL';c='#A0A0C0';}else if(rv<2){s='ELEVATED';c='#FFE500';}else if(rv<3){s='VOLUME COMING IN';c='#FF8A00';}else{s='CLIMAX';c='#FF3060';bl=true;}
+  st.textContent=s;st.style.color=c;st.style.animation=bl?'blink 1s infinite':'none';
+  var r1=rsi(closes.slice(-120));var el1=document.getElementById('rsi1h');el1.textContent=r1?r1.toFixed(1):'—';
+  el1.style.color=r1>=70?'#00FFA3':r1<=30?'#FF3060':'#E8E8F0';
+  document.getElementById('rsi1hs').textContent=r1>=70?'overbought':r1<=30?'oversold':'neutral';
+  if(!window.__ws_live){document.getElementById('px').textContent='$'+Math.round(last.close).toLocaleString();}
+  document.getElementById('upd').textContent='panels updated '+new Date().toLocaleTimeString();
+ }catch(e){document.getElementById('upd').innerHTML='<span class="err">feed error · retrying</span>';}
+ try{
+  var r2=await fetch(API+'/stats');var s2=await r2.json();
+  document.getElementById('stats').innerHTML='<span>Open <b>$'+Math.round(+s2.open).toLocaleString()+'</b></span><span>Day High <b>$'+Math.round(+s2.high).toLocaleString()+'</b></span><span>Day Low <b>$'+Math.round(+s2.low).toLocaleString()+'</b></span><span>24h Vol <b>'+(+s2.volume).toFixed(0)+' BTC</b></span>';
+  document.getElementById('rng').textContent='$'+Math.round(+s2.low).toLocaleString()+'–'+Math.round(+s2.high).toLocaleString();
+  document.getElementById('v24').textContent=fmt((+s2.volume)*(+s2.last));
+ }catch(e){}
+ try{
+  var r3=await fetch(API+'/candles?granularity=86400');var j3=await r3.json();
+  var cl3=j3.map(function(c){return c[4];}).reverse();var rd=rsi(cl3.slice(-120));
+  var el2=document.getElementById('rsi1d');el2.textContent=rd?rd.toFixed(1):'—';
+  el2.style.color=rd>=70?'#00FFA3':rd<=30?'#FF3060':'#E8E8F0';
+  document.getElementById('rsi1ds').textContent=rd>=70?'overbought':rd<=30?'oversold':'neutral';
+ }catch(e){}
+}
+// realtime price tick — websocket
+function tick(){
+ try{
+  var ws=new WebSocket('wss://ws-feed.exchange.coinbase.com');
+  ws.onopen=function(){window.__ws_live=true;ws.send(JSON.stringify({type:'subscribe',product_ids:['BTC-USD'],channels:['ticker']}));};
+  ws.onmessage=function(e){var m=JSON.parse(e.data);if(m.type==='ticker'&&m.price){document.getElementById('px').textContent='$'+(+m.price).toLocaleString(undefined,{maximumFractionDigits:0});document.getElementById('upd').textContent='tick '+new Date().toLocaleTimeString();}};
+  ws.onclose=function(){window.__ws_live=false;setTimeout(tick,5000);};
+  ws.onerror=function(){try{ws.close();}catch(x){}};
+ }catch(e){}
+}
+// static snapshot sections (from v0.0.4 — kept in full)
+(function(){
+ var TFS=[['15m',0.56,3],['30m',0.50,5],['1H',0.46,4],['2H',0.38,6],['3H',0.30,7],['4H',0.24,8],['1D',0.15,10],['3D',0.11,11],['1W',0.06,12]];
+ function gen(flipP,seed,endN,endC){var s=seed,out=[],cur='G';for(var i=0;i<N;i++){s=(s*9301+49297)%233280;if(s/233280<flipP)cur=(cur==='G'?'R':'G');out.push(cur);}for(var j=N-endN;j<N;j++)out[j]=endC;return out;}
+ var LAD=[
+  {nm:'TREND',desc:'price vs EMA stack + HH/LL',val:-0.85,base:'R',bounce:0},
+  {nm:'MOMENTUM',desc:'RSI / MACD vs midline',val:-0.80,base:'R',bounce:3},
+  {nm:'VOLATILITY',desc:'ATR vs percentile band',val:0.45,base:'G',bounce:9},
+  {nm:'VOLUME',desc:'flow vs multi-window norm',val:-0.40,base:'R',bounce:2},
+  {nm:'PRICE',desc:'position vs recent structure',val:-0.85,base:'R',bounce:0}];
+ var H='';
+ LAD.forEach(function(L,li){
+  var rows=TFS.map(function(t,i){var endC=(i<L.bounce)?'G':L.base;return {n:t[0],d:gen(t[1],t[2]+li*37,t[2],endC)};});
+  var col=L.val<0?'#FF3060':'#00FFA3';
+  H+='<div class="lad"><div class="ladh"><span class="nm">'+L.nm+'</span><span class="desc">'+L.desc+'</span><span class="val" style="color:'+col+'">'+(L.val>=0?'+':'')+L.val.toFixed(2)+'</span></div>';
+  rows.forEach(function(r){var c='';r.d.forEach(function(v){c+='<div class="cell '+(v==='G'?'g':'r')+'"></div>';});H+='<div class="lrow"><span class="tf2">'+r.n+'</span><div class="cells">'+c+'</div></div>';});
+  var vv='';for(var i=0;i<N;i++){var gc=0;rows.forEach(function(r){if(r.d[i]==='G')gc++;});var cls=gc>=5?'g':gc>=4?'split':'r';vv+='<div class="cell '+cls+'"></div>';}
+  H+='<div class="lrow"><span class="tf2" style="color:#00D4FF">NET</span><div class="cells v">'+vv+'</div></div><div class="ladx"><span>← 60 bars (4H)</span><span>now</span></div></div>';
+ });
+ document.getElementById('ladders').innerHTML=H;
+})();
+(function(){
+ var W=400,H=180;function y(r){return H-r/100*H;}
+ var g='';[30,50,70].forEach(function(r){g+='<line x1="0" y1="'+y(r).toFixed(1)+'" x2="400" y2="'+y(r).toFixed(1)+'" stroke="'+(r===50?'#252538':'#1A1A2A')+'" stroke-width="0.7" stroke-dasharray="'+(r===50?'0':'4 3')+'" vector-effect="non-scaling-stroke"/>';});
+ var L=[['15m','#80E8FF',51.4,0.7],['30m','#50D8E8',49.4,0.85],['1H','#28C8DC',45.8,1.0],['2H','#3CC864',39.2,1.25],['3H','#B4DC3C',29.6,1.55],['4H','#F0DC3C',28.7,1.85],['1D','#FF961E',16.4,2.2],['3D','#FF6428',29.5,1.3],['1W','#E64632',33.0,0.6]];
+ L.forEach(function(l,idx){var col=l[1],end=l[2],freq=l[3];var p='';for(var i=0;i<=N;i++){var t=i/N;var base=56-t*22-(end<35?(35-end)*t:0);var osc=Math.sin(i*freq+idx)*13+Math.sin(i*freq*2.1+idx)*5;var r=Math.max(6,Math.min(92,base+osc));if(i===N)r=end;p+=(i===0?'M':'L')+(i/N*W).toFixed(1)+' '+y(r).toFixed(1)+' ';}g+='<path d="'+p+'" stroke="'+col+'" stroke-width="1.1" fill="none" vector-effect="non-scaling-stroke" opacity="0.85"/>';});
+ g+='<text x="4" y="'+(y(70)-3).toFixed(1)+'" font-family="monospace" font-size="7" fill="#7A7A95">70 overbought</text><text x="4" y="'+(y(30)-3).toFixed(1)+'" font-family="monospace" font-size="7" fill="#7A7A95">30 oversold</text>';
+ document.getElementById('rsi').innerHTML=g;
+ document.getElementById('rsileg').innerHTML=L.map(function(l){return '<span><i style="background:'+l[1]+'"></i>'+l[0]+' '+l[2].toFixed(1)+'</span>';}).join('')+'<span style="color:var(--dim)">max/min hlines pending full pine</span>';
+})();
+(function(){var A=[['ADA','180: MACD% EXTREME','−5.2',1],['ADA','240: MACD% EXTREME','−5.0',1],['ETH','120: MACD% EXTREME','−3.2',1],['ETH','D: RSI EXTREME','−2.6',1],['BTC','240: MACD% EXTREME','−3.0',1],['BTC','D: RSI EXTREME','−2.6',1],['AVAX','240: MACD% EXTREME','−2.5',1],['AVAX','W: VOL SQUEEZE','p0',0],['LTC','D: RSI EXTREME','−2.6',1],['LINK','W: VOL SQUEEZE','p3',0]];var h='';A.forEach(function(a){var col=a[3]?'#FFE500':'#7A7A95';h+='<div class="al"><span class="dot" style="background:'+col+';box-shadow:0 0 5px '+col+'"></span><span class="tkr">'+a[0]+'</span><span class="msg">'+a[1]+'</span><span class="z" style="color:'+(a[3]?'#FF3060':'#7A7A95')+'">'+a[2]+'</span></div>';});document.getElementById('alerts').innerHTML=h;})();
+function start(){if(!window.LightweightCharts){return setTimeout(start,80);}initChart();load();setInterval(load,60000);tick();}
+start();
+</script>
+</body>
+</html>
