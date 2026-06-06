@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SCINTILLA · BTC · Company Page</title>
+<style>
+:root{
+  --bg:#0A0A0F;--panel:#0D1118;--tile:#0B0F16;--line:#1A1A2A;--line2:#252538;
+  --crk:#00D4FF;--coin:#8B5CF6;--amber:#F59E0B;--sv1:#00FFA3;--sv2:#C8FF00;--sv3:#FFE500;--sv4:#FF8A00;--sv5:#FF3060;
+  --ink:#E8E8F0;--ink2:#A0A0C0;--ink3:#7A7A95;--dim:#4A4A6A;--mute:#2A2A3A;
+  --es:rgba(0,212,255,.22);--em:rgba(0,212,255,.18);--ef:rgba(0,212,255,.12);
+  --mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;--sans:ui-sans-serif,-apple-system,"Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{max-width:880px;margin:0 auto;padding:18px 15px 50px;font-size:12px}
+@keyframes breathe{0%,100%{filter:drop-shadow(0 0 2px rgba(0,212,255,.5)) drop-shadow(0 0 7px rgba(0,212,255,.16))}50%{filter:drop-shadow(0 0 4px rgba(0,212,255,.7)) drop-shadow(0 0 13px rgba(0,212,255,.3))}}
+@keyframes whisper{0%,100%{opacity:.55}50%{opacity:.9}}
+.stamp{font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:12px}
+.head{border:0.8px solid var(--em);padding:13px 16px;margin-bottom:13px}
+.head-t{display:flex;align-items:center;gap:11px}
+.br{animation:breathe 4.2s ease-in-out infinite}
+.tk{font-family:var(--sans);font-weight:700;font-size:18px;letter-spacing:.04em}
+.id{margin-left:auto;text-align:right;font-family:var(--mono)}.id .px{font-size:18px;font-weight:700}.id .ch{font-size:10px;color:var(--sv5)}
+.stats{display:flex;flex-wrap:wrap;gap:16px;margin-top:11px;padding-top:11px;border-top:0.6px solid var(--line);font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase}
+.stats b{color:var(--ink2);font-weight:600}
+.section{margin-bottom:26px}
+.sechead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sechead .n{font-family:var(--mono);font-size:7.5px;color:var(--dim);letter-spacing:.2em}
+.sechead .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--ink);text-transform:uppercase}
+.sechead .rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,.18),transparent)}
+.sechead .meta{font-family:var(--mono);font-size:8px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase}
+.zone{border:0.8px solid var(--es);padding:15px}
+/* read */
+.readtxt{font-family:var(--mono);font-size:10px;color:var(--ink2);line-height:1.7}.readtxt b{color:var(--ink)}
+.pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.pill{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:4px 11px;border-radius:3px}
+.pill.amber{border:1px solid var(--amber);color:var(--amber)}.pill.crk{border:1px solid var(--crk);color:var(--crk)}.pill.red{border:1px solid var(--sv5);color:var(--sv5)}
+/* price + ladder */
+.gutter{width:50px;flex:none}
+.prow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.chartarea{flex:1;min-width:0;height:150px;position:relative}
+.chartarea svg{width:100%;height:100%;display:block}
+.lrow{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.lrow .tf{width:50px;flex:none;font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--ink2);text-transform:uppercase;text-align:right}
+.cells{flex:1;display:flex;gap:1.5px;height:14px;min-width:0}
+.cells.tall{height:20px}
+.cell{flex:1;border-radius:1px}
+.cell.g{background:var(--sv1);box-shadow:0 0 3px rgba(0,255,163,.25)}
+.cell.r{background:var(--sv5);box-shadow:0 0 3px rgba(255,48,96,.25)}
+.cell.split{background:repeating-linear-gradient(45deg,#1f2a24,#1f2a24 2px,#142019 2px,#142019 4px)}
+.vsep{height:0.8px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.18),transparent);margin:8px 0 7px 58px}
+.lread{font-family:var(--mono);font-size:9px;color:var(--ink2);line-height:1.6;margin-top:13px;border-top:0.6px solid var(--line);padding-top:11px}
+.lread b{color:var(--sv1)}.lread .r{color:var(--sv5)}
+.legend{display:flex;gap:13px;font-family:var(--mono);font-size:7.5px;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin-top:11px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.legend i.sp{background:repeating-linear-gradient(45deg,#1f2a24,#1f2a24 2px,#142019 2px,#142019 4px)}
+/* heartbeat */
+.hb{height:150px;position:relative}.hb svg{width:100%;height:100%;display:block}
+.hbleg{display:flex;flex-wrap:wrap;gap:13px;font-family:var(--mono);font-size:7.5px;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin-top:10px}
+.hbleg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:2px;margin-right:4px}
+.hbleg s{display:inline-block;width:8px;height:8px;border-radius:2px;vertical-align:-1px;margin-right:4px;text-decoration:none}
+/* matrix heatmap */
+.mtx{display:grid;grid-template-columns:74px repeat(4,1fr);gap:4px}
+.mh{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;padding:4px 2px;text-align:center}
+.mh.l{text-align:left}
+.mrl{font-family:var(--mono);font-size:8.5px;color:var(--ink2);letter-spacing:.06em;display:flex;align-items:center}
+.mcell{border-radius:2px;padding:7px 4px;text-align:center;font-family:var(--mono);position:relative}
+.mcell .v{font-size:11px;color:var(--ink);font-weight:700}
+.mcell .z{font-size:6.5px;color:var(--ink3);margin-top:2px}
+.mcell.glow{box-shadow:0 0 9px currentColor}
+.mxleg{font-family:var(--mono);font-size:7.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-top:11px}
+/* alerts */
+.al{display:grid;grid-template-columns:9px 54px 1fr auto;gap:10px;align-items:center;padding:9px 4px;border-bottom:0.6px solid var(--line);font-family:var(--mono)}
+.al:last-child{border-bottom:none}
+.al .dot{width:7px;height:7px;border-radius:50%}
+.al .tkr{font-weight:700;font-size:11px;color:var(--ink);letter-spacing:.04em}
+.al .msg{font-size:9px;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.al .z{font-size:9px;color:var(--sv5);font-weight:700}
+.foot{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--dim);text-align:center;margin-top:18px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<div class="stamp"><span>SCINTILLA · BTCUSD · COMPANY PAGE · NORTH STAR</span><span>v0.0.1 · WEEKEND</span></div>
+
+<div class="head">
+  <div class="head-t">
+    <svg class="br" width="20" height="20" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="4" fill="#00D4FF"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85" transform="rotate(120 48 48)"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".70" transform="rotate(240 48 48)"/></svg>
+    <span class="tk">₿ BTC</span>
+    <span class="id"><div class="px">$61,237</div><div class="ch">−3.4% · BITCOIN</div></span>
+  </div>
+  <div class="stats"><span>Day <b>59,228–63,818</b></span><span>52w low <b>60,001</b></span><span>50d <b>76,663</b></span><span>200d <b>78,933</b></span><span>Mkt cap <b>$1.21T</b></span></div>
+</div>
+
+<!-- 01 READ -->
+<div class="section">
+  <div class="sechead"><span class="n">01</span><span class="t">Read</span><span class="rule"></span><span class="meta">updated 8:05 PM</span></div>
+  <div class="zone">
+    <div class="readtxt"><b>4H trend strength in the 100th percentile</b> — a powerful established move down. <b>Daily RSI 16.3 at the 0th percentile</b> — a historic oversold extreme. Price is below both the 50- and 200-day averages, trading on the year low. Trend is down and intact, but momentum is stretched to a bounce-prone extreme — watch exhaustion / divergence to confirm a low.</div>
+    <div class="pills"><span class="pill amber">STRONG TREND</span><span class="pill crk">OVERSOLD EXTREME</span><span class="pill red">AT YEAR LOW</span></div>
+  </div>
+</div>
+
+<!-- 02 PRICE + MTF LADDER -->
+<div class="section">
+  <div class="sechead"><span class="n">02</span><span class="t">Price · MTF Trend Ladder</span><span class="rule"></span><span class="meta">HH / LL · where TFs disagree</span></div>
+  <div class="zone">
+    <div class="prow"><span class="gutter"></span><div class="chartarea"><svg id="cnd" viewBox="0 0 360 150" preserveAspectRatio="none"></svg></div></div>
+    <div id="ladder"></div>
+    <div class="legend"><span><i style="background:#00FFA3"></i>uptrend (HH)</span><span><i style="background:#FF3060"></i>downtrend (LL)</span><span><i class="sp"></i>verdict split · TFs fighting</span></div>
+    <div class="lread">Right edge: <span class="r">Weekly · 3-Day · Daily all red</span> — trend is down. But <b>4H · 2H · 1H just flipped green</b> — a bounce firing under a falling trend. The <b>VERDICT</b> goes hatched = timeframes disagree = transition, not conviction. That split <b>is</b> the signal.</div>
+  </div>
+</div>
+
+<!-- 03 VOLUME HEARTBEAT -->
+<div class="section">
+  <div class="sechead"><span class="n">03</span><span class="t">Volume Heartbeat · intensity &amp; speed</span><span class="rule"></span><span class="meta">4H</span></div>
+  <div class="zone">
+    <div class="hb"><svg id="hb" viewBox="0 0 720 150" preserveAspectRatio="none"></svg></div>
+    <div class="hbleg"><span><s style="background:rgba(0,255,163,.5)"></s>buying vol</span><span><s style="background:rgba(255,48,96,.5)"></s>selling vol</span><span><i style="background:#00D4FF"></i>RVOL</span><span><i style="background:#F59E0B"></i>ROC</span><span><i style="background:#8B5CF6"></i>Accel</span></div>
+  </div>
+</div>
+
+<!-- 04 INDICATOR HEATMAP -->
+<div class="section">
+  <div class="sechead"><span class="n">04</span><span class="t">Indicator Heatmap</span><span class="rule"></span><span class="meta">value · z-score</span></div>
+  <div class="zone">
+    <div class="mtx" id="mtx"></div>
+    <div class="mxleg">cyan = stretched LOW · red = stretched HIGH · glow = |z| ≥ 2 (statistical extreme)</div>
+  </div>
+</div>
+
+<!-- 05 COHORT ALERTS -->
+<div class="section">
+  <div class="sechead"><span class="n">05</span><span class="t">Crypto Cohort · Alerts</span><span class="rule"></span></div>
+  <div class="zone" id="alerts"></div>
+</div>
+
+<div class="foot">FMP-live price · Supabase statistics + alert_log · North Star · normal + unique on one screen</div>
+
+<script>
+var N=36;
+// ---- candles ----
+(function(){
+ var close=78000,arr=[];
+ for(var i=0;i<N;i++){
+   var t=i/(N-1); var drift=(i<30)?-0.012:0.010; var noise=(Math.sin(i*1.7)*0.5+Math.cos(i*0.9)*0.5)*0.011;
+   var o=close; close=close*(1+drift+noise); close=Math.max(59500,close);
+   var c=close; var hi=Math.max(o,c)*(1+Math.abs(noise)*0.6+0.004); var lo=Math.min(o,c)*(1-Math.abs(noise)*0.6-0.004);
+   arr.push([o,hi,lo,c]);
+ }
+ var mn=57000,mx=81000,H=150,W=360,cw=W/N;
+ function y(p){return H-(p-mn)/(mx-mn)*H;}
+ var g='';
+ // gridlines
+ [60000,70000,80000].forEach(function(p){g+='<line x1="0" y1="'+y(p).toFixed(1)+'" x2="360" y2="'+y(p).toFixed(1)+'" stroke="#1A1A2A" stroke-width="0.6" vector-effect="non-scaling-stroke"/>';});
+ arr.forEach(function(d,i){var o=d[0],hi=d[1],lo=d[2],c=d[3];var up=c>=o;var col=up?'#00FFA3':'#FF3060';var x=i*cw+cw/2;
+   g+='<line x1="'+x.toFixed(1)+'" y1="'+y(hi).toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+y(lo).toFixed(1)+'" stroke="'+col+'" stroke-width="1" vector-effect="non-scaling-stroke"/>';
+   var by=y(Math.max(o,c)),bh=Math.abs(y(o)-y(c))||1.5;
+   g+='<rect x="'+(i*cw+cw*0.22).toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+(cw*0.56).toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="'+col+'" opacity="0.9"/>';
+ });
+ document.getElementById('cnd').innerHTML=g;
+})();
+// ---- ladder ----
+(function(){
+ function gen(flipP,seed,endN,endC){var s=seed,out=[],cur='G';for(var i=0;i<N;i++){s=(s*9301+49297)%233280;if(s/233280<flipP)cur=(cur==='G'?'R':'G');out.push(cur);}for(var j=N-endN;j<N;j++)out[j]=endC;return out;}
+ var TF=[{n:'WEEKLY',d:gen(0.05,11,11,'R')},{n:'3-DAY',d:gen(0.07,29,10,'R')},{n:'DAILY',d:gen(0.13,57,9,'R')},{n:'4H',d:gen(0.28,83,5,'G')},{n:'3H',d:gen(0.36,101,5,'G')},{n:'2H',d:gen(0.42,131,4,'G')},{n:'1H',d:gen(0.50,199,4,'G')}];
+ var h='';
+ TF.forEach(function(t){var c='';t.d.forEach(function(v){c+='<div class="cell '+(v==='G'?'g':'r')+'"></div>';});h+='<div class="lrow"><span class="tf">'+t.n+'</span><div class="cells">'+c+'</div></div>';});
+ var v='';for(var i=0;i<N;i++){var gc=0;TF.forEach(function(t){if(t.d[i]==='G')gc++;});var cls;if(gc>=6)cls='g';else if(gc>=5)cls='g';else if(gc===4)cls='g';else if(gc===3)cls='split';else cls='r';v+='<div class="cell '+cls+'"></div>';}
+ h+='<div class="vsep"></div><div class="lrow"><span class="tf" style="color:#00D4FF">VERDICT</span><div class="cells tall">'+v+'</div></div>';
+ document.getElementById('ladder').innerHTML=h;
+})();
+// ---- heartbeat ----
+(function(){
+ var n=44,W=720,H=150,bw=W/n;var g='';
+ g+='<line x1="0" y1="100" x2="720" y2="100" stroke="#1A1A2A" stroke-width="0.6" vector-effect="non-scaling-stroke"/>';
+ for(var i=0;i<n;i++){var buy=(Math.sin(i*1.3)>0);var h2=20+Math.abs(Math.sin(i*0.7)*Math.cos(i*1.1))*70;var x=i*bw;
+   g+='<rect x="'+(x+1).toFixed(1)+'" y="'+(100-h2).toFixed(1)+'" width="'+(bw-2).toFixed(1)+'" height="'+h2.toFixed(1)+'" fill="'+(buy?'rgba(0,255,163,.22)':'rgba(255,48,96,.22)')+'"/>';
+ }
+ function wave(amp,freq,phase,base,col,sw){var p='';for(var i=0;i<=n;i++){var x=i*bw;var yv=base-amp*(0.5+0.5*Math.sin(i*freq+phase))-Math.sin(i*freq*2.3+phase)*amp*0.3;p+=(i===0?'M':'L')+x.toFixed(1)+' '+yv.toFixed(1)+' ';}return '<path d="'+p+'" stroke="'+col+'" stroke-width="'+sw+'" fill="none" vector-effect="non-scaling-stroke" style="filter:drop-shadow(0 0 2px '+col+')"/>';}
+ g+=wave(38,0.9,0,100,'#00D4FF',1.4);
+ g+=wave(30,1.5,1.1,100,'#F59E0B',1.2);
+ g+=wave(46,2.0,0.5,100,'#8B5CF6',1.6);
+ document.getElementById('hb').innerHTML=g;
+})();
+// ---- matrix heatmap ----
+(function(){
+ var TFS=['1H','4H','1D','1W'];
+ var M=[
+  ['RSI',[[48.1,-0.19,42],[31.8,-1.46,7],[16.3,-2.6,0],[31.9,-1.66,2]]],
+  ['WILL %R',[[-36.8,0.46,63],[-64,-0.58,34],[-86.8,-1.53,7],[-89.5,-1.54,4]]],
+  ['EMA21 %',[[-0.03,-0.02,47],[-4.29,-1.71,5],[-16.59,-1.95,3],[-24.24,-1.24,11]]],
+  ['EMA50 %',[[-2.26,-1.14,9],[-10.26,-2.55,1],[-20.25,-1.56,5],[-35.8,-1.36,11]]],
+  ['MACD %',[[-1.12,-1.71,4],[-3.88,-2.95,1],[-5.6,-1.33,7],[-7.79,-0.88,17]]],
+  ['BB %B',[[0.49,-0.04,48],[0.22,-0.86,22],[-0.08,-1.86,3],[0.06,-1.54,5]]],
+  ['ATR %',[[1.69,2.15,97],[2.59,1.34,91],[4.07,-0.38,39],[12.46,-0.32,50]]],
+  ['ADX',[[34.1,0.55,75],[72.6,3.68,100],[39.7,0.79,79],[24.2,-0.59,34]]]
+ ];
+ var h='<div class="mh l">Indicator</div>';TFS.forEach(function(t){h+='<div class="mh">'+t+'</div>';});
+ M.forEach(function(row){h+='<div class="mrl">'+row[0]+'</div>';
+   row[1].forEach(function(c){var val=c[0],z=c[1],p=c[2];var az=Math.min(Math.abs(z)/3,1);
+     var bg,fg;if(z<0){bg='rgba(0,212,255,'+(0.06+az*0.30).toFixed(2)+')';fg='#00D4FF';}else{bg='rgba(255,48,96,'+(0.06+az*0.30).toFixed(2)+')';fg='#FF3060';}
+     var glow=Math.abs(z)>=2?' glow':'';
+     h+='<div class="mcell'+glow+'" style="background:'+bg+';color:'+fg+'"><div class="v">'+val+'</div><div class="z">z '+(z>=0?'+':'')+z+' · p'+p+'</div></div>';});
+ });
+ document.getElementById('mtx').innerHTML=h;
+})();
+// ---- alerts ----
+(function(){
+ var A=[['ADA','180: MACD% EXTREME','−5.2',1],['ADA','240: MACD% EXTREME','−5.0',1],['ETH','120: MACD% EXTREME','−3.2',1],['ETH','D: RSI EXTREME','−2.6',1],['BTC','240: MACD% EXTREME','−3.0',1],['BTC','D: RSI EXTREME','−2.6',1],['AVAX','240: MACD% EXTREME','−2.5',1],['AVAX','W: VOLATILITY SQUEEZE','p0',0],['LTC','D: RSI EXTREME','−2.6',1],['LINK','W: VOLATILITY SQUEEZE','p3',0]];
+ var h='';
+ A.forEach(function(a){var col=a[3]?'#FFE500':'#7A7A95';h+='<div class="al"><span class="dot" style="background:'+col+';box-shadow:0 0 5px '+col+'"></span><span class="tkr">'+a[0]+'</span><span class="msg">'+a[1]+'</span><span class="z" style="color:'+(a[3]?'#FF3060':'#7A7A95')+'">'+a[2]+'</span></div>';});
+ document.getElementById('alerts').innerHTML=h;
+})();
+</script>
+</body>
+</html>
