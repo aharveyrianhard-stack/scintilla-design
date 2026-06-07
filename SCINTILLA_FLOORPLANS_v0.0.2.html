@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SCINTILLA · Architecture · Floor Plans v0.0.2</title>
+<style>
+:root{--bg:#0A0A0F;--line:#1A1A2A;--crk:#00D4FF;--sv1:#00FFA3;--sv3:#FFE500;--sv5:#FF3060;--amber:#F59E0B;--ink:#E8E8F0;--ink2:#A0A0C0;--ink3:#7A7A95;--dim:#4A4A6A;--mute:#2A2A3A;--es:rgba(0,212,255,.50);--em:rgba(0,212,255,.40);--ef:rgba(0,212,255,.28);--mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;--sans:ui-sans-serif,-apple-system,"Helvetica Neue",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{max-width:980px;margin:0 auto;padding:18px 15px 60px;font-size:12px}
+@keyframes breathe{0%,100%{filter:drop-shadow(0 0 4px rgba(0,212,255,.7)) drop-shadow(0 0 12px rgba(0,212,255,.3))}50%{filter:drop-shadow(0 0 8px rgba(0,212,255,.95)) drop-shadow(0 0 22px rgba(0,212,255,.5))}}
+@keyframes whisper{0%,100%{opacity:.5}50%{opacity:1}}
+.stamp{font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:12px}
+.head{border:1px solid var(--em);box-shadow:inset 0 0 26px rgba(0,212,255,.05);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.br{animation:breathe 4.2s ease-in-out infinite}
+.wm{font-family:var(--mono);font-weight:700;font-size:19px;letter-spacing:.28em;padding-left:.28em;color:var(--ink);text-shadow:0 0 8px rgba(0,212,255,.6),0 0 26px rgba(0,212,255,.25)}
+.live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;letter-spacing:.16em;color:var(--sv1);text-transform:uppercase}
+.live i{width:6px;height:6px;border-radius:50%;background:var(--sv1);box-shadow:0 0 6px var(--sv1);animation:whisper 1.6s infinite}
+.id{margin-left:auto;font-family:var(--mono);text-align:right}.id .px{font-size:16px;font-weight:700;color:var(--crk);text-shadow:0 0 10px rgba(0,212,255,.45)}.id .ch{font-size:8px;color:var(--ink3)}
+.sechead{display:flex;align-items:center;gap:10px;margin:26px 0 12px}
+.sechead .n{font-family:var(--mono);font-size:7.5px;color:var(--crk);letter-spacing:.2em}
+.sechead .t{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ink);text-transform:uppercase}
+.sechead .rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,.5),transparent)}
+.sechead .meta{font-family:var(--mono);font-size:8px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase}
+.note{font-family:var(--mono);font-size:9px;color:var(--ink3);line-height:1.7;margin-bottom:14px}
+.note b{color:var(--ink2)}
+.z{border:1px solid var(--es);box-shadow:inset 0 0 18px rgba(0,212,255,.04);padding:10px 12px;position:relative}
+.z .zn{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--crk);text-transform:uppercase;font-weight:700;text-shadow:0 0 8px rgba(0,212,255,.35)}
+.z .zc{font-family:var(--mono);font-size:7.5px;color:var(--ink2);line-height:1.6;margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+.z .zc .star{color:var(--sv3)}
+.badge{position:absolute;top:8px;right:10px;font-family:var(--mono);font-size:6.5px;letter-spacing:.14em;padding:2px 7px;border-radius:3px;text-transform:uppercase}
+.badge.lv{color:#06120c;background:var(--sv1);font-weight:700;box-shadow:0 0 8px rgba(0,255,163,.4)}
+.badge.st{color:var(--amber);border:1px solid var(--amber)}
+.badge.snap{color:var(--ink3);border:1px solid var(--mute)}
+.hub{display:grid;gap:9px;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.84fr);grid-template-areas:"hh hh hh" "tt tt tt" "ch co al" "ff ff ff"}
+.hub .hh{grid-area:hh}.hub .tt{grid-area:tt}.hub .ch{grid-area:ch;min-height:140px}.hub .co{grid-area:co;min-height:140px}.hub .al{grid-area:al;min-height:140px}.hub .ff{grid-area:ff}
+@media(max-width:700px){.hub{grid-template-columns:1fr;grid-template-areas:"hh" "tt" "ch" "co" "al" "ff"}}
+.tick{display:grid;gap:9px;grid-template-columns:1fr 1fr}
+@media(max-width:700px){.tick{grid-template-columns:1fr}}
+.tick .full{grid-column:1/-1}
+.path{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;padding:18px 0}
+.pbox{border:1px solid var(--es);box-shadow:inset 0 0 18px rgba(0,212,255,.05);padding:14px 18px;font-family:var(--mono);text-align:center;min-width:150px}
+.pbox .t1{font-size:10px;letter-spacing:.2em;font-weight:700;text-transform:uppercase;text-shadow:0 0 8px rgba(0,212,255,.3)}
+.pbox .t2{font-size:7.5px;color:var(--ink3);margin-top:5px;text-transform:uppercase;letter-spacing:.08em;line-height:1.6}
+.arr{font-family:var(--mono);color:var(--crk);font-size:14px;text-align:center;text-shadow:0 0 8px rgba(0,212,255,.5)}
+.arr .lbl{display:block;font-size:6.5px;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.law{border:1px solid var(--ef);box-shadow:inset 0 0 18px rgba(0,212,255,.04);padding:12px 15px;font-family:var(--mono);font-size:8.5px;color:var(--ink2);line-height:1.8;margin-top:14px}
+.law b{color:var(--ink)}
+.foot{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--dim);text-align:center;margin-top:26px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="stamp"><span>SCINTILLA · ARCHITECTURE · FLOOR PLANS</span><span>v0.0.2 · POP PASS</span></div>
+
+<div class="head">
+  <svg class="br" width="30" height="30" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="4" fill="#00D4FF"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85" transform="rotate(120 48 48)"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".70" transform="rotate(240 48 48)"/></svg>
+  <span class="wm">SCINTILLA</span>
+  <span class="live"><i></i>live · the blueprint ticks</span>
+  <span class="id"><div class="px" id="px">—</div><div class="ch" id="upd">connecting to BTC…</div></span>
+</div>
+
+<div class="note"><b>How to read this:</b> three floor plans — geometry and contents, no pixel skin yet (the dump pours into these shells). Badges: <b style="color:var(--sv1)">LIVE</b> = moving today (Coinbase) · <b style="color:var(--amber)">STREAM</b> = lights up with the Supabase wire-in · <b>SNAP</b> = static until wired.</div>
+
+<div class="sechead"><span class="n">F1</span><span class="t">HUB · home dashboard</span><span class="rule"></span><span class="meta">best-build geometry = law · feed on mobile</span></div>
+<div class="hub">
+  <div class="z hh"><span class="zn">Header</span><div class="zc">trefoil · chat · pulse (geiger Sv) · wordmark · search</div><span class="badge lv">live</span></div>
+  <div class="z tt"><span class="zn">Cohort Tabs</span><div class="zc"><span class="star">★ FAVORITES</span> · MEGA · GROWTH · AI · CRYPTO · INDEXES · MACRO — favorites IS a cohort · tabs pre-glow with aggregate heat</div><span class="badge st">stream</span></div>
+  <div class="z ch"><span class="zn">Chart</span><div class="zc">auto-rotating focus ticker · the custom chart engine lives here</div><span class="badge lv">live</span></div>
+  <div class="z co"><span class="zn">Cohort Table</span><div class="zc">per ticker: <span class="star">★ star toggle</span> · signal icon · Sv · state · chg · sparkline — tap row → ticker page · star any row → favorites</div><span class="badge st">stream</span></div>
+  <div class="z al"><span class="zn">Alerts</span><div class="zc">tiered sv1→sv6 · icon + ticker + msg + time · only hot rows scintillate</div><span class="badge st">stream</span></div>
+  <div class="z ff"><span class="zn">Footer</span><div class="zc">TF · range · zoom knobs · global sync-lock</div><span class="badge snap">snap</span></div>
+</div>
+
+<div class="sechead"><span class="n">F2</span><span class="t">TICKER PAGE · per instrument</span><span class="rule"></span><span class="meta">one scroll · estimates = tab for equities</span></div>
+<div class="tick">
+  <div class="z full"><span class="zn">Identity</span><div class="zc">ticker · <span class="star">★ favorite toggle</span> · live price tick · chg · tabs: overview / estimates(equities) / chart / news</div><span class="badge lv">live</span></div>
+  <div class="z full"><span class="zn">Live Chart + Panes</span><div class="zc">candles + EMA rainbow (pine colors + thickness) · volume pane · RVOL banner · custom gradient chart next</div><span class="badge lv">live</span></div>
+  <div class="z"><span class="zn">Gradient Ladders</span><div class="zc">5 ladders × 9 TFs · true cell widths · NET verdict · short TFs = the radar</div><span class="badge lv">live</span></div>
+  <div class="z"><span class="zn">Geiger Dial</span><div class="zc">composite −1…+1 · regime · components</div><span class="badge st">stream</span></div>
+  <div class="z"><span class="zn">Momentum</span><div class="zc">RSI rainbow pane · pine max/min hlines · live chips</div><span class="badge lv">live</span></div>
+  <div class="z"><span class="zn">Key Stats</span><div class="zc">mkt cap · ranges · supply · ATH/ATL — the normal layer</div><span class="badge snap">snap</span></div>
+  <div class="z"><span class="zn">Read</span><div class="zc">full-sentence narrative · state pills</div><span class="badge st">stream</span></div>
+  <div class="z"><span class="zn">Cohort Alerts</span><div class="zc">cross-ticker extremes · alert_log</div><span class="badge st">stream</span></div>
+  <div class="z full"><span class="zn">Estimates (equities)</span><div class="zc">forecast multi-metric · conviction · valuation (P/E compression) · scenarios · click-bar x-ray — already built</div><span class="badge snap">built</span></div>
+</div>
+
+<div class="sechead"><span class="n">F3</span><span class="t">THE PATH · one go</span><span class="rule"></span><span class="meta">walk it end-to-end, real soon</span></div>
+<div class="path">
+  <div class="pbox"><div class="t1" style="color:var(--crk)">HUB</div><div class="t2">home · cohorts + tickers<br/>scan the board</div></div>
+  <div class="arr">⟶<span class="lbl">tap a ticker</span></div>
+  <div class="pbox"><div class="t1" style="color:var(--sv1)">TICKER PAGE</div><div class="t2">live chart · ladders · read<br/>(+ estimates for equities)</div></div>
+  <div class="arr">⟶<span class="lbl">zoom in</span></div>
+  <div class="pbox"><div class="t1" style="color:var(--ink2)">X-RAY</div><div class="t2">click a bar · per-period detail</div></div>
+  <div class="arr">⟵<span class="lbl">back · one tap</span></div>
+</div>
+
+<div class="law"><b>Laws:</b> never less than the version before · over-label everything · LIVE / STREAM / SNAP marked, never faked · short timeframes always live · ladders = same wall-clock span, true cell widths · <b>favorites = a cohort, ★ starred from any row</b> · the dump's look-and-feel pours INTO these shells — the shells rule.</div>
+
+<div class="foot">v0.0.2 · pop pass: trefoil + cherenkov + visible lines · favorites-as-cohort with ★ · skin from the dump next</div>
+
+<script>
+function tick(){try{var ws=new WebSocket('wss://ws-feed.exchange.coinbase.com');
+ ws.onopen=function(){ws.send(JSON.stringify({type:'subscribe',product_ids:['BTC-USD'],channels:['ticker']}));};
+ ws.onmessage=function(e){var m=JSON.parse(e.data);if(m.type==='ticker'&&m.price){document.getElementById('px').textContent='₿ $'+(+m.price).toLocaleString(undefined,{maximumFractionDigits:0});document.getElementById('upd').textContent='tick '+new Date().toLocaleTimeString();}};
+ ws.onclose=function(){setTimeout(tick,5000);};ws.onerror=function(){try{ws.close();}catch(x){}};
+}catch(e){}}
+tick();
+</script>
+</body>
+</html>
