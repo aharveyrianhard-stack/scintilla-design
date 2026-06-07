@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SCINTILLA · Floor Plans v0.0.4 · CLICKABLE</title>
+<style>
+:root{--bg:#0A0A0F;--line:#1A1A2A;--crk:#00D4FF;--sv1:#00FFA3;--sv3:#FFE500;--sv5:#FF3060;--amber:#F59E0B;--ink:#E8E8F0;--ink2:#A0A0C0;--ink3:#7A7A95;--dim:#4A4A6A;--mute:#2A2A3A;--es:rgba(0,212,255,.50);--em:rgba(0,212,255,.40);--ef:rgba(0,212,255,.28);--mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;--sans:ui-sans-serif,-apple-system,"Helvetica Neue",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{max-width:980px;margin:0 auto;padding:18px 15px 60px;font-size:12px}
+@keyframes breathe{0%,100%{filter:drop-shadow(0 0 4px rgba(0,212,255,.7))}50%{filter:drop-shadow(0 0 8px rgba(0,212,255,.95))}}
+@keyframes whisper{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes slide{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.stamp{font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:12px}
+.head{border:1px solid var(--em);box-shadow:inset 0 0 26px rgba(0,212,255,.05);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.br{animation:breathe 4.2s ease-in-out infinite}
+.wm{font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:.28em;padding-left:.28em;text-shadow:0 0 8px rgba(0,212,255,.6),0 0 26px rgba(0,212,255,.25)}
+.live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:var(--sv1);text-transform:uppercase}
+.live i{width:6px;height:6px;border-radius:50%;background:var(--sv1);box-shadow:0 0 6px var(--sv1);animation:whisper 1.6s infinite}
+.id{margin-left:auto;font-family:var(--mono);text-align:right}.id .px{font-size:15px;font-weight:700;color:var(--crk);text-shadow:0 0 10px rgba(0,212,255,.45)}.id .ch{font-size:8px;color:var(--ink3)}
+.viewtabs{display:flex;gap:8px;margin-bottom:14px;font-family:var(--mono)}
+.vt{flex:1;text-align:center;padding:8px;border:1px solid var(--ef);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);cursor:pointer}
+.vt.on{color:#06120c;background:var(--crk);font-weight:700;box-shadow:0 0 14px rgba(0,212,255,.35)}
+.note{font-family:var(--mono);font-size:8.5px;color:var(--ink3);line-height:1.7;margin-bottom:12px}.note b{color:var(--crk)}
+.z{border:1px solid var(--es);box-shadow:inset 0 0 18px rgba(0,212,255,.04);padding:9px 11px;position:relative}
+.z .zn{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--crk);text-transform:uppercase;font-weight:700}
+.z .zn .bd{font-size:5.5px;letter-spacing:.1em;padding:1px 4px;border-radius:2px;margin-left:6px;vertical-align:2px}
+.bd.lv{color:#06120c;background:var(--sv1);font-weight:700}
+.bd.st{color:var(--amber);border:1px solid var(--amber)}
+.bd.sn{color:var(--ink3);border:1px solid var(--mute)}
+.clk{cursor:pointer}
+.clk:hover{box-shadow:inset 0 0 0 1px rgba(0,212,255,.5),0 0 14px rgba(0,212,255,.15)}
+.wf{margin-top:7px;display:flex;flex-direction:column;gap:2.5px}
+.wr{display:flex;gap:2.5px}
+.s{border:1px dashed #34344c;border-radius:2px;padding:2.5px 4px;font-family:var(--mono);font-size:6.2px;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;text-align:center;flex:1;min-width:0;white-space:nowrap;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.s.w2{flex:2}.s.w3{flex:3}.s.w4{flex:4}
+.s.acc{border-color:rgba(0,212,255,.5);color:var(--crk)}.s.hot{border-color:rgba(255,48,96,.5);color:var(--sv5)}.s.ok{border-color:rgba(0,255,163,.45);color:var(--sv1)}
+.s.t1{height:30px}.s.t2{height:64px}.s.t3{height:96px}
+.hub{display:grid;gap:8px;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);grid-template-areas:"hh hh hh" "tt tt tt" "ch co al" "tp tp tp" "ff ff ff"}
+.hub .hh{grid-area:hh}.hub .tt{grid-area:tt}.hub .ch{grid-area:ch}.hub .co{grid-area:co}.hub .al{grid-area:al}.hub .tp{grid-area:tp}.hub .ff{grid-area:ff}
+@media(max-width:700px){.hub{grid-template-columns:1fr;grid-template-areas:"hh" "tt" "ch" "co" "al" "tp" "ff"}}
+.tick{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+@media(max-width:700px){.tick{grid-template-columns:1fr}}
+.tick .full{grid-column:1/-1}
+.tapeline{overflow:hidden;border:1px dashed rgba(0,212,255,.35);border-radius:2px;margin-top:6px}
+.tapein{display:inline-flex;gap:24px;white-space:nowrap;padding:4px 0;font-family:var(--mono);font-size:8px;animation:slide 22s linear infinite;width:max-content}
+.tapein b{color:var(--ink)}.tapein .up{color:var(--sv1)}.tapein .dn{color:var(--sv5)}
+.back{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--crk);text-transform:uppercase;cursor:pointer;border:1px solid var(--ef);padding:6px 12px;margin-bottom:10px}
+.back:hover{box-shadow:0 0 12px rgba(0,212,255,.25)}
+.xray{border:1px solid var(--es);box-shadow:inset 0 0 22px rgba(0,212,255,.06);padding:11px;margin-top:8px;display:none}
+.xray.show{display:block}
+.hide{display:none!important}
+.law{border:1px solid var(--ef);padding:11px 14px;font-family:var(--mono);font-size:8px;color:var(--ink2);line-height:1.8;margin-top:14px}.law b{color:var(--ink)}
+.foot{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--dim);text-align:center;margin-top:22px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="stamp"><span>SCINTILLA · FLOOR PLANS · CLICKABLE</span><span>v0.0.4 · WALK THE PATH</span></div>
+
+<div class="head">
+  <svg class="br" width="26" height="26" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="4" fill="#00D4FF"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85" transform="rotate(120 48 48)"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".70" transform="rotate(240 48 48)"/></svg>
+  <span class="wm">SCINTILLA</span>
+  <span class="live"><i></i>live</span>
+  <span class="id"><div class="px" id="px">—</div><div class="ch" id="upd">connecting…</div></span>
+</div>
+
+<div class="viewtabs"><div class="vt on" id="vt-hub" onclick="go('hub')">F1 · HUB</div><div class="vt" id="vt-tk" onclick="go('tk')">F2 · TICKER PAGE</div></div>
+<div class="note"><b>This one is clickable.</b> On the HUB, tap any ticker row → the TICKER PAGE opens. On the ticker page, tap the estimates bar → the X-RAY drops. ← HUB takes you back. The tape rides both screens. Badges shrunk · proportions tightened (chart dominates, scroll areas breathe).</div>
+
+<!-- ============ HUB VIEW ============ -->
+<div id="view-hub">
+<div class="hub">
+  <div class="z hh"><span class="zn">Header<span class="bd lv">LIVE</span></span>
+    <div class="wf"><div class="wr"><div class="s acc">trefoil</div><div class="s">chat</div><div class="s">pulse Sv</div><div class="s w3 acc">WORDMARK</div><div class="s w2">search</div></div></div>
+  </div>
+  <div class="z tt"><span class="zn">Cohort Tabs<span class="bd st">STREAM</span></span>
+    <div class="wf"><div class="wr"><div class="s ok">★ FAV</div><div class="s">MEGA</div><div class="s acc">GROWTH</div><div class="s">AI</div><div class="s">CRYPTO</div><div class="s">INDEXES</div><div class="s">MACRO</div></div></div>
+  </div>
+  <div class="z ch"><span class="zn">Chart<span class="bd lv">LIVE</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s">CHART</div><div class="s acc">TICKER</div><div class="s hot">state</div><div class="s">auto</div></div>
+      <div class="wr"><div class="s t3 w4">price canvas · candles + EMA rainbow</div></div>
+      <div class="wr"><div class="s w4">volume · buy/sell</div></div>
+      <div class="wr"><div class="s">LVL</div><div class="s w2">PX · chg</div></div>
+    </div>
+  </div>
+  <div class="z co"><span class="zn">Cohort Table<span class="bd st">STREAM</span> · tap a row</span>
+    <div class="wf">
+      <div class="wr"><div class="s ok">★</div><div class="s">icon</div><div class="s w2">TICKER</div><div class="s">Sv</div><div class="s">st</div><div class="s">chg</div><div class="s w2">spark</div></div>
+      <div class="wr clk" onclick="go('tk')"><div class="s ok">★</div><div class="s">icon</div><div class="s w2 acc">₿ BTC → page</div><div class="s">Sv</div><div class="s hot">BRK</div><div class="s ok">+0.3%</div><div class="s w2">spark</div></div>
+      <div class="wr clk" onclick="go('tk')"><div class="s">☆</div><div class="s">icon</div><div class="s w2 acc">MU → page</div><div class="s">Sv</div><div class="s">TAG</div><div class="s ok">+3.4%</div><div class="s w2">spark</div></div>
+      <div class="wr clk" onclick="go('tk')"><div class="s">☆</div><div class="s">icon</div><div class="s w2">NVDA → page</div><div class="s">Sv</div><div class="s">—</div><div class="s hot">−0.8%</div><div class="s w2">spark</div></div>
+      <div class="wr clk" onclick="go('tk')"><div class="s">☆</div><div class="s">icon</div><div class="s w2">TSLA → page</div><div class="s">Sv</div><div class="s">—</div><div class="s ok">+1.6%</div><div class="s w2">spark</div></div>
+    </div>
+  </div>
+  <div class="z al"><span class="zn">Alerts<span class="bd st">STREAM</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s acc">ALL</div><div class="s">SCIN</div><div class="s">STRUCT</div><div class="s">SYS</div></div>
+      <div class="wr"><div class="s hot">ic</div><div class="s w3">NVDA · break</div><div class="s">t</div></div>
+      <div class="wr"><div class="s">ic</div><div class="s w3">TSLA · cascade</div><div class="s">t</div></div>
+      <div class="wr"><div class="s">ic</div><div class="s w3">META · exhaustion</div><div class="s">t</div></div>
+      <div class="wr"><div class="s">ic</div><div class="s w3">GOOGL · tag</div><div class="s">t</div></div>
+      <div class="wr"><div class="s">ic</div><div class="s w3">AMD · volume</div><div class="s">t</div></div>
+    </div>
+  </div>
+  <div class="z tp"><span class="zn">Ticker Tape<span class="bd lv">LIVE</span> · every screen · tap chip → pop-out</span>
+    <div class="tapeline"><div class="tapein"><span><b>BTC</b> <span class="up" id="tbtc">—</span></span><span><b>ETH</b> <span class="dn">−1.2%</span></span><span><b>NVDA</b> <span class="up">+2.1%</span></span><span><b>SPY</b> <span class="dn">−0.4%</span></span><span><b>MU</b> <span class="up">+3.4%</span></span><span><b>TSLA</b> <span class="up">+1.6%</span></span><span><b>QQQ</b> <span class="dn">−0.2%</span></span><span><b>GOLD</b> <span class="up">+0.5%</span></span><span><b>BTC</b> <span class="up">·</span></span><span><b>ETH</b> <span class="dn">−1.2%</span></span><span><b>NVDA</b> <span class="up">+2.1%</span></span><span><b>SPY</b> <span class="dn">−0.4%</span></span><span><b>MU</b> <span class="up">+3.4%</span></span><span><b>TSLA</b> <span class="up">+1.6%</span></span><span><b>QQQ</b> <span class="dn">−0.2%</span></span><span><b>GOLD</b> <span class="up">+0.5%</span></span></div></div>
+  </div>
+  <div class="z ff"><span class="zn">Footer<span class="bd sn">SNAP</span></span>
+    <div class="wf"><div class="wr"><div class="s">TF 5m·5D</div><div class="s">ZOOM</div><div class="s">−</div><div class="s">+</div><div class="s w2">sync-lock</div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ TICKER VIEW ============ -->
+<div id="view-tk" class="hide">
+<div class="back" onclick="go('hub')">← HUB</div>
+<div class="tick">
+  <div class="z full"><span class="zn">Identity<span class="bd lv">LIVE</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s acc">trefoil</div><div class="s acc w2">₿ BTC · BITCOIN</div><div class="s ok">★</div><div class="s w2" id="tkpx">LIVE PX</div><div class="s">chg</div></div>
+      <div class="wr"><div class="s acc">OVERVIEW</div><div class="s">ESTIMATES·eq</div><div class="s">CHART</div><div class="s">NEWS</div><div class="s">SOCIAL</div></div>
+    </div>
+  </div>
+  <div class="z full"><span class="zn">Live Chart + Panes<span class="bd lv">LIVE</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s w4 acc">RVOL BANNER · THIN → CLIMAX</div></div>
+      <div class="wr"><div class="s t3 w4">candles + EMA rainbow · pine colors/thickness</div></div>
+      <div class="wr"><div class="s t1 w4">volume pane · buy/sell + 20-bar avg</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Gradient Ladders<span class="bd lv">LIVE</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s">TF</div><div class="s t2 w4">9 TF rows · true cell widths · 72h</div></div>
+      <div class="wr"><div class="s">NET</div><div class="s w4 acc">verdict band</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Geiger Dial<span class="bd st">STREAM</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s hot">−0.74</div><div class="s w3">−1 ◄ needle ► +1</div></div>
+      <div class="wr"><div class="s t1 w4">5 component bars</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Momentum<span class="bd lv">LIVE</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s t2 w4">RSI rainbow · 30/50/70 + pine max/min</div></div>
+      <div class="wr"><div class="s">1H</div><div class="s">1D</div><div class="s">24h vol</div><div class="s">range</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Key Stats<span class="bd sn">SNAP</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s w2">mkt cap</div><div class="s w2">52w range</div></div>
+      <div class="wr"><div class="s w2">ATH / ATL</div><div class="s w2">supply</div></div>
+      <div class="wr"><div class="s w2">vol/mktcap</div><div class="s w2">FDV</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">News · web<span class="bd sn">SNAP→FMP</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s w3">headline · source · time</div><div class="s">→</div></div>
+      <div class="wr"><div class="s w3">headline · source · time</div><div class="s">→</div></div>
+      <div class="wr"><div class="s w3">headline · source · time</div><div class="s">→</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Social · sentiment<span class="bd sn">SNAP→FMP</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s w2">sentiment gauge − / +</div><div class="s">mentions</div><div class="s">trend</div></div>
+      <div class="wr"><div class="s w4">top posts strip · x / stocktwits / reddit</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Read<span class="bd st">STREAM</span></span>
+    <div class="wf">
+      <div class="wr"><div class="s t1 w4">full-sentence narrative</div></div>
+      <div class="wr"><div class="s hot">pill</div><div class="s acc">pill</div><div class="s">pill</div></div>
+    </div>
+  </div>
+  <div class="z"><span class="zn">Cohort Alerts<span class="bd st">STREAM</span></span>
+    <div class="wf"><div class="wr"><div class="s">·</div><div class="s">TKR</div><div class="s w3">msg</div><div class="s hot">z</div></div><div class="wr"><div class="s">·</div><div class="s">TKR</div><div class="s w3">msg</div><div class="s">z</div></div></div>
+  </div>
+  <div class="z full clk" onclick="document.getElementById('xr').classList.toggle('show')"><span class="zn">Estimates (equities)<span class="bd sn">BUILT</span> · tap → x-ray</span>
+    <div class="wf">
+      <div class="wr"><div class="s w2">forecast tiles · 6 metrics · Q/A</div><div class="s">conviction</div><div class="s">valuation P/E</div><div class="s">scenarios</div></div>
+    </div>
+    <div class="xray" id="xr">
+      <div class="wf">
+        <div class="wr"><div class="s acc w4">X-RAY · metric · period</div></div>
+        <div class="wr"><div class="s">actual</div><div class="s">estimate</div><div class="s ok">surprise</div><div class="s">lo·hi</div><div class="s"># analysts</div></div>
+        <div class="wr"><div class="s t1 w4">revision mini-bars · 90d → now</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="z full"><span class="zn">Ticker Tape<span class="bd lv">LIVE</span> · rides this screen too</span>
+    <div class="tapeline"><div class="tapein"><span><b>BTC</b> <span class="up" id="tbtc2">—</span></span><span><b>ETH</b> <span class="dn">−1.2%</span></span><span><b>NVDA</b> <span class="up">+2.1%</span></span><span><b>SPY</b> <span class="dn">−0.4%</span></span><span><b>MU</b> <span class="up">+3.4%</span></span><span><b>TSLA</b> <span class="up">+1.6%</span></span><span><b>QQQ</b> <span class="dn">−0.2%</span></span><span><b>GOLD</b> <span class="up">+0.5%</span></span><span><b>BTC</b> <span class="up">·</span></span><span><b>ETH</b> <span class="dn">−1.2%</span></span><span><b>NVDA</b> <span class="up">+2.1%</span></span><span><b>SPY</b> <span class="dn">−0.4%</span></span><span><b>MU</b> <span class="up">+3.4%</span></span><span><b>TSLA</b> <span class="up">+1.6%</span></span><span><b>QQQ</b> <span class="dn">−0.2%</span></span><span><b>GOLD</b> <span class="up">+0.5%</span></span></div></div>
+  </div>
+</div>
+</div>
+
+<div class="law"><b>Laws:</b> never less than before · over-label · LIVE/STREAM/SNAP honest · short TFs always live · ladders = same span, true widths · favorites = a cohort (★ any row) · tape on every screen · news + social = the normal web layer (FMP) · the dump dresses the slots — the slots rule.</div>
+<div class="foot">v0.0.4 · clickable path: hub → ticker → x-ray → back · badges small · proportions tightened · iconography pours in next</div>
+
+<script>
+function go(v){
+ document.getElementById('view-hub').classList.toggle('hide',v!=='hub');
+ document.getElementById('view-tk').classList.toggle('hide',v!=='tk');
+ document.getElementById('vt-hub').classList.toggle('on',v==='hub');
+ document.getElementById('vt-tk').classList.toggle('on',v==='tk');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function tick(){try{var ws=new WebSocket('wss://ws-feed.exchange.coinbase.com');
+ ws.onopen=function(){ws.send(JSON.stringify({type:'subscribe',product_ids:['BTC-USD'],channels:['ticker']}));};
+ ws.onmessage=function(e){var m=JSON.parse(e.data);if(m.type==='ticker'&&m.price){var p='$'+(+m.price).toLocaleString(undefined,{maximumFractionDigits:0});document.getElementById('px').textContent='₿ '+p;document.getElementById('upd').textContent='tick '+new Date().toLocaleTimeString();['tbtc','tbtc2','tkpx'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=p;});}};
+ ws.onclose=function(){setTimeout(tick,5000);};ws.onerror=function(){try{ws.close();}catch(x){}};
+}catch(e){}}
+tick();
+</script>
+</body>
+</html>
