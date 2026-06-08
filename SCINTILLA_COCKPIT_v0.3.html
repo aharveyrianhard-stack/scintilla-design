@@ -1,0 +1,436 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCINTILLA · Cockpit</title><style>
+  :root{
+    --bg:#07070C;--panel:#0B0C13;--tile:#090A11;--line:#171826;--line2:#23243a;
+    --crk:#00E5FF;--coin:#C8FF00;
+    --trend:#2D9CFF;--mom:#A24BFF;--struct:#FFD400;--vol:#FF8A00;--vola:#FF3DBE;--liq:#18E0C8;--news:#FF5C7A;--macro:#C9A8FF;--coin:#C8FF00;
+    --ink:#EEF1F8;--ink2:#A6AAC4;--ink3:#71748f;--dim:#43465f;
+    --bull:#00FFA3;--bear:#FF2D55;--grey:#C9D2DC;
+    --sv1:#00FF88;--sv2:#AAFF00;--sv3:#FFD000;--sv4:#FF6600;--sv5:#FF1A1A;
+    --mono:'SF Mono','JetBrains Mono',Menlo,monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1200px 600px at 50% -10%,#0c0d18 0%,var(--bg) 60%);color:var(--ink);font-family:var(--mono);padding:24px 20px 90px;max-width:1040px;margin:0 auto;line-height:1.5;font-size:12px}
+  @keyframes breathe{0%,100%{filter:drop-shadow(0 0 3px rgba(0,229,255,.6))}50%{filter:drop-shadow(0 0 9px rgba(0,229,255,1))}}
+  @keyframes vp{0%{box-shadow:0 0 5px 0 rgba(200,255,0,.6)}70%{box-shadow:0 0 20px 8px rgba(200,255,0,0)}100%{box-shadow:0 0 0 0 rgba(200,255,0,0)}}
+  @keyframes sysp{0%{box-shadow:0 0 5px 0 rgba(0,255,163,.55)}70%{box-shadow:0 0 18px 7px rgba(0,255,163,0)}100%{box-shadow:0 0 0 0 rgba(0,255,163,0)}}
+  @keyframes hotp{0%{box-shadow:0 0 6px 0 rgba(255,26,26,.7)}70%{box-shadow:0 0 24px 10px rgba(255,26,26,0)}100%{box-shadow:0 0 0 0 rgba(255,26,26,0)}}
+  @keyframes whisper{0%,100%{opacity:.5}50%{opacity:.95}}
+  @keyframes hotpulse{0%,100%{filter:drop-shadow(0 0 3px currentColor)}50%{filter:drop-shadow(0 0 12px currentColor)}}
+  @keyframes bloom{0%{transform:scale(.3);opacity:.8}100%{transform:scale(2.4);opacity:0}}
+  /* scintillation (the brand): the icon's OWN shape blooms outward, glows, returns — no dots */
+  @keyframes shapebloom{0%{opacity:.6;transform:translate(-50%,-50%) scale(.85)}55%{opacity:0;transform:translate(-50%,-50%) scale(1.55)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.55)}}
+  @keyframes shimmer{0%,100%{filter:drop-shadow(0 0 1px var(--sc))}50%{filter:drop-shadow(0 0 5px var(--sc))}}
+  .scz{position:relative;display:inline-flex;align-items:center;justify-content:center}
+  .scz>.ic{position:relative;z-index:2;display:inline-flex;animation:shimmer var(--spd,1.6s) ease-in-out infinite}
+  .scz>.gho{position:absolute;left:50%;top:50%;z-index:1;display:inline-flex;opacity:0;transform-origin:center;animation:shapebloom var(--spd,1.6s) ease-out infinite;filter:blur(.6px) drop-shadow(0 0 5px var(--sc))}
+  .scz>.gho *{animation:none}
+  @keyframes stackin{0%{opacity:0;transform:scale(.15)}14%{opacity:1;transform:scale(1.3)}28%{transform:scale(1)}86%{opacity:1}100%{opacity:0;transform:scale(.15)}}
+  .stk>*{transform-origin:center}
+  @keyframes reel{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .stamp{color:var(--dim);font-size:8px;letter-spacing:.3em;text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:14px}
+  .head{border:.8px solid rgba(0,229,255,.18);border-radius:5px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:8px;background:linear-gradient(180deg,rgba(0,229,255,.04),transparent)}
+  .wm{font-weight:700;font-size:17px;letter-spacing:.28em;padding-left:.28em;color:#fff;text-shadow:0 0 10px rgba(0,229,255,.6),0 0 22px rgba(0,229,255,.25)}
+  .wm small{display:block;font-size:8px;letter-spacing:.2em;color:var(--ink3);margin-top:4px;text-shadow:none}
+  .quote{margin-left:auto;text-align:right}
+  .quote .px{font-size:20px;font-weight:700;color:#fff;text-shadow:0 0 10px rgba(0,255,163,.5)}
+  .quote .ch{font-size:11px;color:var(--bull)}
+  .quote .nm{font-size:8px;color:var(--ink3);letter-spacing:.12em}
+  .lead{color:var(--ink2);font-size:11px;line-height:1.75;margin:12px 2px 22px}
+  .sechead{display:flex;align-items:center;gap:10px;margin:42px 0 6px}
+  .sechead .n{font-size:8px;color:var(--dim);letter-spacing:.2em}
+  .sechead .t{font-size:14px;letter-spacing:.18em;color:#fff;text-transform:uppercase;text-shadow:0 0 8px rgba(0,229,255,.35)}
+  .sechead .rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,229,255,.4),transparent)}
+  .sechead .meta{font-size:8px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase}
+  .pick{font-size:9.5px;color:var(--ink3);margin:2px 2px 12px}
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{border:.8px solid var(--line2);border-radius:5px;background:var(--panel);overflow:hidden}
+  .opt.fav{border-color:rgba(0,255,163,.4);box-shadow:0 0 0 1px rgba(0,255,163,.12)}
+  .opt .oh{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:.8px solid var(--line);background:rgba(255,255,255,.015)}
+  .opt .ob{font-size:8px;font-weight:700;letter-spacing:.1em;color:#06121a;background:var(--crk);border-radius:3px;padding:3px 7px;box-shadow:0 0 8px rgba(0,229,255,.4)}
+  .opt.fav .ob{background:var(--bull);box-shadow:0 0 8px rgba(0,255,163,.5)}
+  .opt .ot{font-size:10.5px;color:var(--ink);letter-spacing:.04em}
+  .opt .od{font-size:8.5px;color:var(--ink3);margin-left:auto}
+  .opt .oc{padding:14px 14px 16px}
+  .doctrine{border-left:2px solid var(--crk);padding:7px 0 7px 13px;color:var(--ink2);font-size:10.5px;font-style:italic;margin:10px 0}
+  p.note{color:var(--ink3);font-size:10px;line-height:1.7;margin:8px 0}
+  b.k{color:var(--ink)}
+  .alloc{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .ac{border:.8px solid var(--line2);border-radius:4px;padding:9px 11px;background:var(--tile)}
+  .ac .sw{width:100%;height:5px;border-radius:3px;margin-bottom:7px}
+  .ac .nm{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
+  .ac .hx{font-size:8px;color:var(--ink3);margin-top:2px}
+  .ac .rl{font-size:8px;color:var(--ink2);margin-top:4px;line-height:1.4}
+  .vlrow{display:flex;align-items:center;gap:9px;margin:3px 0}
+  .vllab{width:58px;text-align:right;font-size:8.5px;color:var(--ink2);letter-spacing:.06em;flex:none}
+  .vlcells{flex:1;display:flex;border-radius:2px;overflow:hidden}
+  .vlrow.verdict .vllab{color:var(--crk);font-weight:700;text-shadow:0 0 6px rgba(0,229,255,.5)}
+  .vlx{display:flex;justify-content:space-between;font-size:7px;color:var(--dim);margin:6px 0 0 67px;letter-spacing:.02em}
+  .legend{font-size:8.5px;color:var(--ink3);line-height:1.7;margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
+  .legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin:0 3px 0 8px}
+  svg{display:block}
+  .tape{position:relative;height:30px;border-radius:4px;overflow:hidden;cursor:pointer}
+  .geirow{display:flex;gap:30px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .geicol{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .geilabels{display:flex;flex-direction:column;gap:9px;font-size:8px}
+  .geilabels .bn{font-size:7px;letter-spacing:.12em;opacity:.7}
+  .geilabels .bv{font-size:11px;font-weight:700}
+  .rdv{font-size:30px;font-weight:700;line-height:1}
+  .rdm{font-size:8.5px;color:var(--dim);letter-spacing:.06em;margin-top:3px}
+  .rdt{font-size:8px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase}
+  .dots{display:flex;gap:4px;margin-top:4px}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--dim);opacity:.35}
+  .dot.bl{background:var(--crk);opacity:1;box-shadow:0 0 5px var(--crk)}
+  .dot.vi{background:#B14CFF;opacity:1;box-shadow:0 0 5px #B14CFF}
+  .stk{display:inline-flex;flex-direction:column-reverse;gap:0;align-items:center}
+  .stk>*{margin-top:-2.5px}
+  .chip{display:inline-flex;align-items:center;gap:7px;border:.8px solid var(--line2);border-radius:6px;padding:6px 10px;font-size:9px;color:var(--ink2)}
+  .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .dot8{width:8px;height:8px;border-radius:50%}
+  .vol-dot{background:var(--sv2);box-shadow:0 0 9px var(--sv2);animation:vp 1.3s infinite}
+  .hot-dot{background:var(--bear);box-shadow:0 0 9px var(--bear);animation:hotp 1.1s infinite}
+  .whisper{animation:whisper 2.4s ease-in-out infinite}
+  .rings{position:relative;width:24px;height:24px}
+  .rings i{position:absolute;inset:0;margin:auto;width:13px;height:13px;border-radius:50%;border:none;background:radial-gradient(circle,rgba(0,229,255,.5) 0%,rgba(0,229,255,0) 66%);animation:bloom 2.4s ease-out infinite}
+  .rings i:nth-child(2){animation-delay:.8s}.rings i:nth-child(3){animation-delay:1.6s}
+  .rings .core{position:absolute;inset:0;margin:auto;width:6px;height:6px;border-radius:50%;background:var(--crk);box-shadow:0 0 8px var(--crk);border:none;animation:whisper 2.4s ease-in-out infinite}
+  /* severity ramp */
+  .sevtable{width:100%;border-collapse:collapse;font-size:10px}
+  .sevtable th{color:var(--crk);text-align:center;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:6px 4px;border-bottom:1px solid rgba(0,229,255,.2)}
+  .sevtable td{padding:11px 4px;text-align:center;border-bottom:1px solid var(--line);vertical-align:middle}
+  .sevtable td.lbl{text-align:left;color:var(--ink2);font-size:9.5px;width:120px}
+  .sevtable td.lbl small{display:block;color:var(--ink3);font-size:8px}
+  /* news reel */
+  .reelwrap{overflow:hidden;border:.8px solid var(--line2);border-radius:5px;background:var(--tile);padding:0}
+  .reeltrack{display:flex;gap:10px;padding:10px;width:max-content;animation:reel 40s linear infinite}
+  .reelwrap:hover .reeltrack{animation-play-state:paused}
+  .card{flex:none;width:230px;border:.8px solid var(--line);border-radius:4px;padding:9px 10px;background:var(--panel)}
+  .card .src{display:flex;align-items:center;gap:6px;font-size:7.5px;color:var(--crk);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+  .card .src .t{margin-left:auto;color:var(--ink3)}
+  .card .ti{font-size:9.5px;color:var(--ink);line-height:1.4}
+  .nv{display:flex;align-items:flex-end;gap:3px;height:48px;margin-top:10px}
+  .nv i{flex:1;border-radius:1px 1px 0 0;background:#2a2740}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cmpcell{border:.8px solid var(--line2);border-radius:5px;padding:16px;text-align:center;background:var(--tile)}
+  .cmpcell .t{font-size:8px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:14px}
+  .plan{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}
+  .pc{border:.8px solid var(--line2);border-radius:5px;padding:12px;background:var(--panel)}
+  .pc .h{font-size:10px;letter-spacing:.06em;margin-bottom:4px}
+  .pc .tag{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:6px}
+  .pc .d{font-size:9px;color:var(--ink3);line-height:1.55}
+  a{color:var(--crk)}
+  .topstory{border:.8px solid rgba(255,92,122,.3);border-left:3px solid var(--news);border-radius:5px;padding:13px 15px;background:linear-gradient(180deg,rgba(255,92,122,.05),transparent);margin-bottom:12px}
+  .topstory .tslab{font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--news);margin-bottom:5px}
+  .topstory .tsh{font-size:14px;color:#fff;line-height:1.35}
+  .topstory .tsm{font-size:9px;color:var(--ink3);margin-top:7px}
+  .topstory .tsm b{color:var(--bull)}
+  .topicchips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+  .tchip{font-size:8.5px;letter-spacing:.05em;border:.8px solid var(--line2);border-radius:20px;padding:5px 11px;color:var(--ink3);cursor:pointer;user-select:none}
+  .tchip.on{color:#07070c;background:var(--news);border-color:var(--news);box-shadow:0 0 8px rgba(255,92,122,.4)}
+  .card{position:relative}
+  .card .sb{height:3px;border-radius:2px;margin:-9px -10px 7px -10px}
+  .newstabs{display:flex;border:.8px solid var(--line2);border-radius:5px;overflow:hidden;margin-bottom:12px;width:fit-content}
+  .ntab{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:7px 16px;color:var(--ink3);cursor:pointer;border-right:.8px solid var(--line2)}
+  .ntab:last-child{border-right:none}
+  .ntab.on{color:#07070c;background:var(--news);box-shadow:0 0 10px rgba(255,92,122,.35)}
+  .feed{max-height:300px;overflow-y:auto;border:.8px solid var(--line2);border-radius:5px;background:var(--tile)}
+  .feeditem{display:flex;align-items:center;gap:11px;padding:9px 12px;border-bottom:.8px solid var(--line)}
+  .feeditem:last-child{border-bottom:none}
+  .feeditem .fb{width:3px;height:26px;border-radius:2px;flex:none}
+  .feeditem .fsrc{font-size:8px;color:var(--news);letter-spacing:.05em;width:84px;flex:none}
+  .feeditem .fh{font-size:10px;color:var(--ink);flex:1;line-height:1.35}
+  .feeditem .ft{font-size:8px;color:var(--ink3);flex:none}
+  .live{display:inline-flex;align-items:center;gap:5px;font-size:8px;color:var(--bull);letter-spacing:.1em}
+  .live i{width:6px;height:6px;border-radius:50%;background:var(--bull);box-shadow:0 0 6px var(--bull);animation:whisper 1.6s infinite}
+</style>
+<style>
+*{box-sizing:border-box}
+body{margin:0}
+.cock{max-width:1480px;margin:0 auto;padding:12px 16px 30px}
+.rm{border:.8px solid var(--line);border-radius:11px;background:rgba(255,255,255,.012);padding:11px 13px;margin-bottom:12px}
+.rmh{display:flex;align-items:center;gap:9px;font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:var(--ink2);margin-bottom:11px}
+.rmh .rn{display:inline-grid;place-items:center;width:17px;height:17px;border:1px solid var(--crk);border-radius:4px;color:var(--crk);font-size:8.5px}
+.rmh .rmeta{margin-left:auto;color:var(--dim);font-size:8px;letter-spacing:.1em}
+.topbar{display:flex;align-items:center;gap:13px;padding:9px 6px 13px;border-bottom:1px solid var(--line);margin-bottom:13px}
+.topbar .wm{display:flex;flex-direction:column;font-weight:700;letter-spacing:.16em;font-size:15px;color:#eef}
+.topbar .wm small{font-weight:500;letter-spacing:.18em;font-size:8px;color:var(--dim);text-transform:uppercase;margin-top:2px}
+.qt{display:flex;flex-direction:column;align-items:flex-end;margin-left:6px}
+.qt .sym{font-size:16px;font-weight:700;letter-spacing:.04em;color:#eef}
+.qt .sym small{font-size:8px;letter-spacing:.16em;color:var(--dim);margin-left:5px}
+.qt .row2{display:flex;gap:9px;align-items:baseline}.qt .px{font-size:14px;color:#eef}.qt .ch{font-size:11px;font-weight:600;color:var(--bull)}
+.geirow{display:flex;gap:7px;align-items:center;margin-left:auto}
+.geirow .gd{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:7px;letter-spacing:.1em;color:var(--dim)}
+.geirow .gd i{width:12px;height:12px;border-radius:50%;display:block}
+.clk{font-size:9px;letter-spacing:.13em;color:var(--crk);min-width:62px;text-align:right}
+.grid{display:grid;grid-template-columns:286px minmax(0,1fr) 340px;gap:12px}
+.cohtable{display:flex;flex-direction:column}
+.chrow{display:grid;grid-template-columns:54px 26px 1fr 60px 56px;align-items:center;gap:7px;padding:8px 4px;border-top:1px solid rgba(255,255,255,.05);cursor:pointer}
+.chrow:first-child{border-top:0}.chrow:hover{background:rgba(0,229,255,.05)}
+.chrow .sym{font-weight:700;font-size:11.5px;color:#eef}
+.chrow .st{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase}
+.chrow .ch{font-size:10.5px;text-align:right;font-weight:600}.chrow .ch.up{color:var(--bull)}.chrow .ch.dn{color:var(--bear)}
+.alerts{display:flex;flex-direction:column;gap:6px}
+.alrt{display:flex;align-items:center;gap:7px;font-size:9px;padding:6px 7px;border-left:2px solid var(--coin);background:rgba(200,255,0,.05);border-radius:0 5px 5px 0}
+.alrt b{color:#eef}.alrt .at{margin-left:auto;color:var(--dim);font-size:7.5px}
+.tapebar{margin-top:12px;height:30px;border:.8px solid var(--line);border-radius:7px;overflow:hidden;position:relative;background:rgba(255,255,255,.012)}
+.tapetrack{position:absolute;display:flex;gap:24px;align-items:center;height:100%;padding:0 14px;white-space:nowrap;animation:reel 40s linear infinite;font-size:10px}
+.tapetrack b{color:#eef}.tapetrack .u{color:var(--bull)}.tapetrack .d{color:var(--bear)}
+.foot{margin-top:14px;text-align:center;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.subg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.cmpcell{border:.7px solid var(--line);border-radius:8px;padding:9px;text-align:center}
+.cmpcell .t{font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:8px;color:var(--ink3);margin-top:8px;align-items:center}
+.legend .sw{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:3px}
+@media(max-width:1150px){.grid{grid-template-columns:1fr}}
+</style>
+</head><body>
+<div class="cock">
+<div class="topbar">
+  <svg style="animation:breathe 4.2s ease-in-out infinite" width="30" height="30" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="4" fill="#00E5FF"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00E5FF" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00E5FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85" transform="rotate(120 48 48)"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00E5FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".70" transform="rotate(240 48 48)"/></svg>
+  <span class="wm">SCINTILLA<small>MARKET COCKPIT · F1 HUB · canonical floor plan</small></span>
+  <span class="qt"><span class="sym">MICRON<small>NASDAQ · MU</small></span><span class="row2"><span class="px">$956.42</span><span class="ch">+10.70% · live</span></span></span>
+  <span class="geirow" id="hubgei"></span>
+  <span class="clk" id="clk">— ET</span>
+</div>
+
+<div class="grid">
+  <!-- LEFT RAIL -->
+  <div>
+    <div class="rm"><div class="rmh"><span class="rn">A</span> COHORT · SEMIS <span class="rmeta">favorites-as-cohort</span></div><div class="cohtable" id="cohtable"></div></div>
+    <div class="rm"><div class="rmh"><span class="rn">B</span> ALERTS <span class="rmeta">coincidence · spark</span></div><div class="alerts" id="alerts"></div></div>
+  </div>
+
+  <!-- CENTER -->
+  <div>
+    <div class="rm"><div class="rmh"><span class="rn">01</span> VERDICT · composite read <span class="rmeta">ladder · tape · four-ring geiger</span></div>
+      <div id="ladder"></div><div class="vlx" id="vlx"></div>
+      <div class="tape" id="tape" title="click to expand the ladder" style="margin-top:10px"></div>
+      <svg id="geiFlat" width="100%" height="200" viewBox="0 0 600 220" style="margin-top:10px"></svg>
+      <div class="legend"><span class="sw" style="background:var(--bull)"></span>up<span class="sw" style="background:var(--bear)"></span>down<span class="sw" style="background:var(--grey)"></span>warm-up<span class="sw" style="background:repeating-linear-gradient(45deg,#0a8a5f 0 3px,#0d3d2a 3px 6px)"></span>chop in structure</div>
+    </div>
+    <div class="rm"><div class="rmh"><span class="rn">04</span> STRUCTURE · price + levels <span class="rmeta">break marks on close-through</span></div>
+      <svg id="px" width="100%" height="150" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+    <div class="subg">
+      <div class="rm"><div class="rmh"><span class="rn">02</span> MOMENTUM <span class="rmeta">RSI ladder · mono purple</span></div>
+        <svg id="rsi" width="100%" height="140" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
+        <div class="row" id="momstack" style="gap:16px;align-items:flex-end;margin-top:10px;justify-content:center"></div></div>
+      <div class="rm"><div class="rmh"><span class="rn">03</span> VOLUME <span class="rmeta">climax-lit &gt; 1.4× avg</span></div>
+        <svg id="vol" width="100%" height="110" viewBox="0 0 600 110" preserveAspectRatio="none"></svg></div>
+    </div>
+  </div>
+
+  <!-- RIGHT RAIL -->
+  <div>
+    <div class="rm"><div class="rmh"><span class="rn">06</span> NEWS <span class="rmeta">news leads · volume confirms</span></div>
+      <div class="newstabs" id="newstabs" style="margin-bottom:9px"></div>
+<div id="viewSignal">
+  <div class="topstory">
+    <div class="tslab">▲ Driving it now · top story</div>
+    <div class="tsh">Micron rockets 8%, memory names snap back — "the memory trade is alive and well"</div>
+    <div class="tsm">MarketWatch · 24/7 Wall St · 09:30–09:32 ET · <b>bullish</b> · 6 sources corroborating · lines up with today's +10.7% and the volume climax</div>
+  </div>
+  <div class="topicchips" id="chips"></div>
+  <div class="reelwrap"><div class="reeltrack" id="reel"></div></div>
+  
+</div>
+
+<div id="viewAll" style="display:none">
+  <div class="feed" id="feed"></div>
+  
+</div>
+
+
+      <div class="rmh" style="margin:12px 0 6px"><span class="rn" style="border-color:var(--vol);color:var(--vol)">!</span> NEWS-VOLUME SIGNAL <span class="rmeta">story spike</span></div>
+      <div class="nv" id="newsvol"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEVERITY BAND -->
+<div class="rm" style="margin-top:12px"><div class="rmh"><span class="rn">05</span> SEVERITY · on every mark <span class="rmeta">stacking · scintillation · tier color · sv1→sv5</span></div>
+<table class="sevtable">
+  <tr><th></th><th>1 · calm</th><th>2</th><th>3 · building</th><th>4</th><th>5 · critical</th></tr>
+  <tr><td class="lbl" style="color:var(--trend)">Trend<small>EMA-stack depth</small></td>
+    <td id="st1"></td><td id="st2"></td><td id="st3"></td><td id="st4"></td><td id="st5"></td></tr>
+  <tr><td class="lbl" style="color:var(--mom)">Momentum<small>stacked arrows</small></td>
+    <td id="sm1"></td><td id="sm2"></td><td id="sm3"></td><td id="sm4"></td><td id="sm5"></td></tr>
+  <tr><td class="lbl" style="color:var(--struct)">Structure<small>break chevrons</small></td>
+    <td id="ss1"></td><td id="ss2"></td><td id="ss3"></td><td id="ss4"></td><td id="ss5"></td></tr>
+  <tr><td class="lbl" style="color:var(--vol)">Volume<small>climax glow</small></td>
+    <td id="sv1c"></td><td id="sv2c"></td><td id="sv3c"></td><td id="sv4c"></td><td id="sv5c"></td></tr>
+  <tr><td class="lbl" style="color:var(--vola)">Volatility<small>expansion rings</small></td>
+    <td id="svo1"></td><td id="svo2"></td><td id="svo3"></td><td id="svo4"></td><td id="svo5"></td></tr>
+  <tr><td class="lbl" style="color:var(--coin)">Coincidence<small>rings + brightness</small></td>
+    <td id="sc1"></td><td id="sc2"></td><td id="sc3"></td><td id="sc4"></td><td id="sc5"></td></tr>
+  <tr><td class="lbl" style="color:var(--crk)">Pulse<small>scintillation amplitude</small></td>
+    <td id="sp1"></td><td id="sp2"></td><td id="sp3"></td><td id="sp4"></td><td id="sp5"></td></tr>
+</table>
+</div>
+
+<!-- MOTION + TAPE -->
+<div class="subg">
+  <div class="rm"><div class="rmh"><span class="rn">07</span> SCINTILLATION <span class="rmeta">the icon's own shape flares</span></div>
+    <div class="cmp"><div class="cmpcell"><div class="t">calm — slow, sparse</div><div class="row" style="justify-content:center;gap:22px" id="calmDemo"></div></div>
+    <div class="cmpcell"><div class="t">hot — fast, dense</div><div class="row" style="justify-content:center;gap:22px" id="hotDemo"></div></div></div></div>
+  <div class="rm"><div class="rmh"><span class="rn">★</span> FAMILY HUES <span class="rmeta">canon · cyan = chrome only</span></div>
+    <div class="legend" style="font-size:8.5px;gap:10px">
+      <span><span class="sw" style="background:var(--trend)"></span>Trend</span><span><span class="sw" style="background:var(--mom)"></span>Momentum</span><span><span class="sw" style="background:var(--struct)"></span>Structure</span><span><span class="sw" style="background:var(--vol)"></span>Volume</span><span><span class="sw" style="background:var(--vola)"></span>Volatility</span><span><span class="sw" style="background:var(--coin)"></span>Coincidence</span><span><span class="sw" style="background:var(--news)"></span>News</span><span><span class="sw" style="background:var(--crk)"></span>Cherenkov chrome</span></div></div>
+</div>
+
+<div class="tapebar" id="tapebar"></div>
+<div class="foot">SCINTILLA · read-only cockpit · parity −0.168767 · orch components in floor-plan rooms · live MU</div>
+</div>
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const MU=[[367.85,74429800],[366.24,51498700],[377.76,41414900],[377.58,40224123],[406.73,49216633],[421.51,43101000],[420.59,36377600],[426.56,37015800],[465.66,52534900],[456.23,40370110],[457.23,33626400],[455.07,33405025],[448.42,32013600],[449.38,27734000],[487.48,45998149],[481.72,38178002],[496.72,35379600],[524.56,41298800],[504.29,44816645],[518.46,36248500],[517.16,36554400],[542.21,40215300],[576.45,46043705],[640.20,64268503],[666.59,55725835],[646.63,47527515],[746.81,65130914],[795.33,70972938],[766.58,73743000],[803.63,54875148],[776.01,42142707],[724.66,48519043],[681.54,60042500],[698.74,61792100],[731.99,48827400],[762.10,42461500],[751.00,36002915],[895.88,76560800],[928.41,72295713],[923.52,49694349],[971.00,60498600],[1035.50,46552116],[1064.10,47555400],[1079.57,40324200],[996.00,54917200],[864.01,77250536]];
+const closes=MU.map(d=>d[0]),vols=MU.map(d=>d[1]),N=MU.length;
+const DATES=['04-27','05-01','05-05','05-08','05-12','05-15','05-19','05-22','05-27','05-29','06-02','06-05'];
+
+// ===== VERDICT LADDER =====
+function resampleReg(step){const out=[];for(let i=0;i<N;i+=step){const a=closes[Math.max(0,i-step)],b=closes[Math.min(N-1,i+step-1)];out.push(b>=a?1:-1);}return out;}
+const dailyReg=closes.map((c,i)=>closes[i]>=closes[Math.max(0,i-3)]?1:-1);
+const TFS=[{name:'WEEKLY',cells:9,w:64,h:18,reg:resampleReg(5)},{name:'3-DAY',cells:15,w:32,h:18,reg:resampleReg(3)},{name:'DAILY',cells:N,w:16,h:16,reg:dailyReg},{name:'4H',cells:N*2,w:8,h:14,seed:31,p:.20},{name:'3H',cells:N*3,w:4,h:13,seed:42,p:.30},{name:'2H',cells:N*4,w:2,h:12,seed:53,p:.40},{name:'1H',cells:N*6,w:1,h:12,seed:64,p:.47}];
+const WARM=0.08;
+function tfRegAt(tf,f){if(tf.reg){const a=tf.reg;return a[Math.min(a.length-1,Math.floor(f*a.length))];}const base=dailyReg[Math.min(N-1,Math.floor(f*N))];const r=mulberry32(Math.floor(f*10000)+tf.seed*9301)();return r<tf.p?-base:base;}
+const ladder=document.getElementById('ladder');
+TFS.forEach(tf=>{const row=document.createElement('div');row.className='vlrow';const lab=document.createElement('div');lab.className='vllab';lab.textContent=tf.name;row.appendChild(lab);const cells=document.createElement('div');cells.className='vlcells';cells.style.height=tf.h+'px';const warm=Math.round(tf.cells*WARM);for(let c=0;c<tf.cells;c++){const f=(c+0.5)/tf.cells;const cell=document.createElement('div');cell.style.flex='1';if(c<warm){cell.style.background='var(--grey)';cell.style.opacity='.6';}else{cell.style.background=tfRegAt(tf,f)>0?'var(--bull)':'var(--bear)';}cell.style.borderRight=tf.w>4?'1px solid rgba(7,7,12,.5)':(tf.w>1?'1px solid rgba(7,7,12,.3)':'none');cells.appendChild(cell);}row.appendChild(cells);ladder.appendChild(row);});
+(function(){const M=180,warm=Math.round(M*WARM),row=document.createElement('div');row.className='vlrow verdict';const lab=document.createElement('div');lab.className='vllab';lab.textContent='VERDICT';row.appendChild(lab);const cells=document.createElement('div');cells.className='vlcells';cells.style.height='22px';for(let c=0;c<M;c++){const f=(c+0.5)/M;const cell=document.createElement('div');cell.style.flex='1';if(c<warm){cell.style.background='var(--grey)';cell.style.opacity='.6';cells.appendChild(cell);continue;}let score=0,tot=0,agree=0;TFS.forEach(tf=>{score+=tfRegAt(tf,f)*tf.w;tot+=tf.w;});const v=score>=0?1:-1;TFS.forEach(tf=>{if(tfRegAt(tf,f)===v)agree+=tf.w;});const base=v>0?'#0a8a5f':'#a01830',lite=v>0?'#16c074':'#e02440';if(agree/tot<0.88)cell.style.background='repeating-linear-gradient(45deg,'+lite+' 0 3px,'+base+' 3px 6px)';else cell.style.background=v>0?'var(--bull)':'var(--bear)';cells.appendChild(cell);}row.appendChild(cells);ladder.appendChild(row);})();
+document.getElementById('vlx').innerHTML=DATES.map(d=>'<span>'+d+'</span>').join('');
+
+// ===== VERDICT TAPE (click expands the ladder) =====
+(function(){const M=200,warm=Math.round(M*WARM),t=document.getElementById('tape');for(let c=0;c<M;c++){const f=(c+0.5)/M;const seg=document.createElement('div');seg.style.position='absolute';seg.style.top='0';seg.style.bottom='0';seg.style.left=(c/M*100)+'%';seg.style.width=(100/M+0.3)+'%';if(c<warm){seg.style.background='rgba(201,210,220,.25)';t.appendChild(seg);continue;}let score=0,tot=0,agree=0;TFS.forEach(tf=>{score+=tfRegAt(tf,f)*tf.w;tot+=tf.w;});const v=score>=0?1:-1;TFS.forEach(tf=>{if(tfRegAt(tf,f)===v)agree+=tf.w;});const conv=agree/tot;const col=v>0?'0,255,163':'255,45,85';seg.style.background='rgba('+col+','+(0.25+conv*0.75).toFixed(2)+')';if(conv>0.9)seg.style.boxShadow='0 0 8px rgba('+col+',.9)';t.appendChild(seg);}
+  const lad=document.getElementById('ladder');t.addEventListener('click',()=>{lad.scrollIntoView({behavior:'smooth',block:'center'});lad.style.transition='box-shadow .3s';lad.style.boxShadow='0 0 0 2px var(--crk)';setTimeout(()=>lad.style.boxShadow='none',900);});
+})();
+
+// ===== THREE-RING GEIGER, LAID FLAT (inverted-U arches) =====
+(function(){
+  const svg=document.getElementById('geiFlat'),CX=300,CY=190,LMIN=-1,LMAX=1.301,LR=LMAX-LMIN;
+  function logPct(x){return Math.max(0,Math.min(1,(Math.log10(x)-LMIN)/LR));}
+  function sv(p){return p<0.2?'#00FF88':p<0.4?'#AAFF00':p<0.6?'#FFD000':p<0.8?'#FF6600':'#FF1A1A';}
+  function pt(r,th){const t=th*Math.PI/180;return [CX+r*Math.cos(t),CY-r*Math.sin(t)];}
+  function arch(r,fromDeg,toDeg){const[x1,y1]=pt(r,fromDeg),[x2,y2]=pt(r,toDeg);const lg=Math.abs(fromDeg-toDeg)>180?1:0;return 'M'+x1.toFixed(1)+' '+y1.toFixed(1)+'A'+r+' '+r+' 0 '+lg+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1);}
+  // MU live · 4 bands, each its OWN identity color; fill = reading, glow = heat
+  const BANDS=[{n:'LONG',r:158,read:13,sign:'+',col:'#FF2D55'},{n:'MID',r:122,read:5,sign:'−',col:'#FFE500'},{n:'SHORT',r:86,read:10,sign:'+',col:'#00FF85'},{n:'MICRO',r:52,read:16,sign:'+',col:'#00E5FF'}];
+  let h='';
+  BANDS.forEach(b=>{const pct=logPct(b.read),end=180-180*pct,c=b.col;
+    h+='<path d="'+arch(b.r,180,0)+'" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="11" stroke-linecap="round"/>';
+    h+='<path d="'+arch(b.r,180,end)+'" fill="none" stroke="'+c+'" stroke-width="10" stroke-linecap="round" style="filter:drop-shadow(0 0 8px '+c+')"/>';
+  });
+  // baseline only (center point removed — noisy)
+  h+='<line x1="135" y1="'+CY+'" x2="465" y2="'+CY+'" stroke="#23243a" stroke-width="1"/>';
+  // band legend (right) — color-coded readings
+  BANDS.forEach((b,i)=>{const c=b.col;h+='<text x="492" y="'+(70+i*22)+'" fill="'+c+'" font-size="9" font-family="monospace" style="filter:drop-shadow(0 0 5px '+c+')">'+b.n+'  '+b.sign+b.read+'</text>';});
+  // composite readout (left)
+  h+='<text x="20" y="34" fill="#FF6600" font-size="15" font-weight="700" font-family="monospace" style="filter:drop-shadow(0 0 6px #FF6600)">MU · 5.6 Sv</text>';
+  h+='<text x="20" y="50" fill="#00FF9C" font-size="9" font-family="monospace">▲ BULL · T4 · 3/4 HOT</text>';
+  h+='<text x="300" y="214" fill="#43465f" font-size="7.5" font-family="monospace" text-anchor="middle">MICRO / SHORT / MID / LONG band breaks = TBD · to be tested</text>';
+  svg.innerHTML=h;
+})();
+
+// ===== RSI rainbow (real, periods 7/14/21) =====
+(function(){const svg=document.getElementById('rsi'),W=600,H=150;function rsiArr(p){const a=[];let ag=0,al=0;for(let i=1;i<=p;i++){const ch=closes[i]-closes[i-1];ag+=Math.max(ch,0);al+=Math.max(-ch,0);}ag/=p;al/=p;a[p]=100-100/(1+ag/(al||1e-9));for(let i=p+1;i<N;i++){const ch=closes[i]-closes[i-1];ag=(ag*(p-1)+Math.max(ch,0))/p;al=(al*(p-1)+Math.max(-ch,0))/p;a[i]=100-100/(1+ag/(al||1e-9));}return a;}
+  const ys=v=>H-(v/100*H);
+  svg.insertAdjacentHTML('beforeend','<rect x="0" y="'+ys(70)+'" width="600" height="'+(ys(30)-ys(70))+'" fill="rgba(0,229,255,.04)"/>');
+  [30,50,70].forEach(lv=>svg.insertAdjacentHTML('beforeend','<line x1="0" y1="'+ys(lv)+'" x2="600" y2="'+ys(lv)+'" stroke="#23243a" stroke-width="1" stroke-dasharray="3 4"/><text x="4" y="'+(ys(lv)-3)+'" fill="#43465f" font-size="9" font-family="monospace">'+lv+'</text>'));
+  const periods=[4,6,8,10,12,14,17,20,24,29,35,42,50];
+  const MOMH=270; // momentum hue — MONOCHROME ladder (not a rainbow); tone+opacity differentiate timeframes
+  periods.forEach((p,idx)=>{if(p>=N-1)return;const a=rsiArr(p);const f=idx/(periods.length-1);const c='hsl('+MOMH+',88%,'+(74-f*36).toFixed(0)+'%)';const op=(0.5+f*0.45).toFixed(2);const xs=i=>(i-p)/(N-1-p)*W;let d='';for(let i=p;i<N;i++)d+=(i===p?'M':'L')+xs(i).toFixed(1)+' '+ys(a[i]).toFixed(1)+' ';
+    svg.insertAdjacentHTML('beforeend','<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="1.2" opacity="'+op+'" style="filter:drop-shadow(0 0 2px '+c+')"/>');});
+  svg.insertAdjacentHTML('beforeend','<text x="402" y="13" fill="#A6AAC4" font-size="9" font-family="monospace">RSI · monochrome ladder · one line per timeframe</text>');
+})();
+
+// ===== momentum stacked arrows =====
+function bldStyle(i,n){const step=0.28,cyc=(n*step+1.5).toFixed(2);return 'animation:stackin '+cyc+'s ease-in-out infinite;animation-delay:'+(i*step).toFixed(2)+'s';}
+function arrowStack(n,up,size,col){const c=col||(up?'#00FFA3':'#FF2D55');const path=up?'M 2 11 L 7 3 L 12 11':'M 2 3 L 7 11 L 12 3';let s='<span class="stk">';for(let i=0;i<n;i++)s+='<svg width="'+size+'" height="'+(size*0.7)+'" viewBox="0 0 14 14" style="'+bldStyle(i,n)+'"><path d="'+path+'" stroke="'+c+'" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 3px '+c+')"/></svg>';return s+'</span>';}
+(function(){const tfn=[['1H',1,true],['4H',2,true],['1D',3,true],['3D',2,false],['1W',3,true]];const el=document.getElementById('momstack');
+  tfn.forEach(([t,n,up])=>el.insertAdjacentHTML('beforeend','<span class="chip" style="flex-direction:column;gap:5px">'+scz(arrowStack(n,up,15),up?'#00FF9C':'#FF2D55',n,1)+'<span>'+t+'</span></span>'));})();
+
+// ===== severity ramps =====
+// ===== scintillation = the icon's own shape blooms outward + returns · faster when hotter =====
+function scz(inner,color,sev,noBloom){
+  const dur=(1.7-sev*0.2).toFixed(2);
+  const gho=noBloom?'':'<span class="gho">'+inner+'</span>';
+  return '<span class="scz" style="--sc:'+color+';--spd:'+dur+'s">'+gho+'<span class="ic">'+inner+'</span></span>';
+}
+// ===== severity — every family stacks AND scintillates =====
+(function(){
+  for(let s=1;s<=5;s++){
+    let tr='<span class="stk" style="gap:3px">';for(let i=0;i<s;i++)tr+='<svg width="22" height="4" viewBox="0 0 22 4" style="margin:0;'+bldStyle(i,s)+'"><line x1="1" y1="2" x2="21" y2="2" stroke="#2D9CFF" stroke-width="2.4" stroke-linecap="round"/></svg>';tr+='</span>';
+    document.getElementById('st'+s).innerHTML=scz(tr,'#2D9CFF',s,1);
+    document.getElementById('sm'+s).innerHTML=scz(arrowStack(s,true,12,'#A24BFF'),'#A24BFF',s,1);
+    let sch='<span class="stk">';for(let i=0;i<s;i++)sch+='<svg width="13" height="9" viewBox="0 0 14 12" style="'+bldStyle(i,s)+'"><path d="M 2 10 L 7 3 L 12 10" stroke="#FFD400" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';sch+='</span>';
+    document.getElementById('ss'+s).innerHTML=scz(sch,'#FFD400',s,1);
+    document.getElementById('sv'+s+'c').innerHTML=scz('<svg width="22" height="22" viewBox="0 0 16 16"><rect x="6" y="'+(14-s*2.2)+'" width="4" height="'+(s*2.2)+'" rx=".5" fill="#FF8A00"/></svg>','#FF8A00',s);
+    let vr='';for(let k=0;k<s;k++)vr+='<circle cx="12" cy="12" r="'+(2+k*1.9).toFixed(1)+'" fill="none" stroke="#FF3DBE" stroke-width="1.3" opacity="'+(1-k*0.13).toFixed(2)+'" style="'+bldStyle(k,s)+';transform-box:fill-box;transform-origin:center"/>';
+    document.getElementById('svo'+s).innerHTML=scz('<svg width="24" height="24" viewBox="0 0 26 26">'+vr.replace(/cx="12" cy="12"/g,'cx="13" cy="13"')+'</svg>','#FF3DBE',s,1);
+    const cop=[.5,.66,.82,.92,1][s-1];const cz=(15+s*3);
+    document.getElementById('sc'+s).innerHTML=scz('<svg width="'+cz+'" height="'+cz+'" viewBox="0 0 24 24"><circle cx="8.5" cy="15" r="5.2" fill="none" stroke="#C8FF00" stroke-width="1.3" opacity="'+cop+'"/><circle cx="15.5" cy="15" r="5.2" fill="none" stroke="#C8FF00" stroke-width="1.3" opacity="'+cop+'"/><circle cx="12" cy="9" r="5.2" fill="none" stroke="#C8FF00" stroke-width="1.3" opacity="'+cop+'"/><circle cx="12" cy="13" r="1.7" fill="#C8FF00" opacity="'+cop+'"/></svg>','#C8FF00',s);
+    const pc=['#00FF88','#AAFF00','#FFD000','#FF6600','#FF1A1A'][s-1];
+    document.getElementById('sp'+s).innerHTML=scz('<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+pc+';box-shadow:0 0 5px '+pc+'"></span>',pc,s);
+  }
+})();
+
+// ===== volume histogram =====
+(function(){const svg=document.getElementById('vol'),W=600,H=110;const avg=vols.reduce((a,b)=>a+b,0)/N,mx=Math.max(...vols),bw=W/N;vols.forEach((v,i)=>{const h=v/mx*(H-10);const climax=v>avg*1.4;const col=climax?'#FFB020':'#3a3320';svg.insertAdjacentHTML('beforeend','<rect x="'+(i*bw+1).toFixed(1)+'" y="'+(H-h).toFixed(1)+'" width="'+(bw-2).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+col+'"'+(climax?' style="filter:drop-shadow(0 0 4px #FFB020)"':'')+'/>');});svg.insertAdjacentHTML('beforeend','<line x1="0" y1="'+(H-avg/mx*(H-10))+'" x2="600" y2="'+(H-avg/mx*(H-10))+'" stroke="#FFD000" stroke-width="1" stroke-dasharray="2 3" opacity=".7"/>');})();
+
+// ===== price + levels =====
+(function(){const svg=document.getElementById('px'),W=600,H=150;const mn=Math.min(...closes),mx=Math.max(...closes);const xs=i=>i/(N-1)*W,ys=v=>H-(v-mn)/(mx-mn)*(H-16)-8;let d='';closes.forEach((c,i)=>d+=(i===0?'M':'L')+xs(i).toFixed(1)+' '+ys(c).toFixed(1)+' ');[{lv:803.63,br:37},{lv:524.56,br:22}].forEach(L=>{svg.insertAdjacentHTML('beforeend','<line x1="0" y1="'+ys(L.lv)+'" x2="600" y2="'+ys(L.lv)+'" stroke="#FFD000" stroke-width="1" stroke-dasharray="4 4" opacity=".5"/>');svg.insertAdjacentHTML('beforeend','<g transform="translate('+(xs(L.br)-7)+','+(ys(L.lv)-7)+')"><line x1="7" y1="14" x2="7" y2="2" stroke="#00FFA3" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px #00FFA3)"/><path d="M 4 5 L 7 2 L 10 5" stroke="#00FFA3" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>');});svg.insertAdjacentHTML('beforeend','<path d="'+d+'L 600 '+H+' L 0 '+H+' Z" fill="url(#pxg)" opacity=".25"/><defs><linearGradient id="pxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00E5FF"/><stop offset="1" stop-color="#00E5FF" stop-opacity="0"/></linearGradient></defs>');svg.insertAdjacentHTML('beforeend','<path d="'+d+'" fill="none" stroke="#00E5FF" stroke-width="2" style="filter:drop-shadow(0 0 5px #00E5FF)"/><circle cx="'+xs(N-1)+'" cy="'+ys(closes[N-1])+'" r="3.5" fill="#00E5FF" style="filter:drop-shadow(0 0 7px #00E5FF)"/>');})();
+
+// ===== news reel (real MU headlines) =====
+const NEWS=[
+ {s:'Market Watch',t:'09:32',sent:1,topic:'Memory',h:"Micron bounces back in a big way: ‘The memory trade is alive and well’"},
+ {s:'24/7 Wall St',t:'09:30',sent:1,topic:'Semis',h:"Micron Rockets 8%, Western Digital +7%, SanDisk +6% in memory snap-back"},
+ {s:'Motley Fool',t:'10:30',sent:1,topic:'Memory',h:"Why Did Micron Stock Bounce Back Today?"},
+ {s:'Seeking Alpha',t:'12:58',sent:1,topic:'AI',h:"Micron: Buckle Up For What Is About To Happen"},
+ {s:'24/7 Wall St',t:'12:53',sent:0,topic:'Fed',h:"Changing Fed expectations rattle tech — this cash-generating titan is the winner"},
+ {s:'Motley Fool',t:'13:00',sent:0,topic:'AI',h:"After Surging 918%, Is Micron Stock Still a Buy?"},
+ {s:'24/7 Wall St',t:'10:55',sent:-1,topic:'IPO',h:"Bank warns SpaceX IPO could trigger a sell-off in semis"},
+ {s:'Zacks',t:'11:06',sent:0,topic:'Fed',h:"New inflation numbers out this week: CPI, PPI"},
+ {s:'24/7 Wall St',t:'09:02',sent:-1,topic:'AI',h:"Is Micron Quietly Preparing for the Collapse in AI Demand?"}
+];
+(function(){
+  const reel=document.getElementById('reel'),chips=document.getElementById('chips');
+  const topics=['ALL','AI','Memory','Semis','Fed','IPO'];let active='ALL';
+  const sc=v=>v>0?'#00FFA3':v<0?'#FF2D55':'#5a5d7a';
+  const card=n=>'<div class="card" data-topic="'+n.topic+'"><div class="sb" style="background:'+sc(n.sent)+';box-shadow:0 0 6px '+sc(n.sent)+'"></div><div class="src"><span class="dot8" style="width:5px;height:5px;background:var(--news);box-shadow:0 0 5px var(--news)"></span>'+n.s+'<span class="t">'+n.t+'</span></div><div class="ti">'+n.h+'</div></div>';
+  function render(){const items=NEWS.filter(n=>active==='ALL'||n.topic===active);const html=items.map(card).join('');reel.innerHTML=html+html;}
+  topics.forEach(tp=>{const c=document.createElement('span');c.className='tchip'+(tp==='ALL'?' on':'');c.textContent=tp==='ALL'?'ALL':'#'+tp;c.onclick=()=>{active=tp;[...chips.children].forEach(x=>x.classList.remove('on'));c.classList.add('on');render();};chips.appendChild(c);});
+  render();
+})();
+
+// news tabs (SIGNAL curated · SEE EVERYTHING full feed) + full feed list
+(function(){
+  const tabs=document.getElementById('newstabs'),feed=document.getElementById('feed');
+  const vS=document.getElementById('viewSignal'),vA=document.getElementById('viewAll');
+  const sc=v=>v>0?'#00FFA3':v<0?'#FF2D55':'#5a5d7a';
+  feed.innerHTML=NEWS.slice().sort((a,b)=>b.t.localeCompare(a.t)).map(n=>'<div class="feeditem"><div class="fb" style="background:'+sc(n.sent)+';box-shadow:0 0 5px '+sc(n.sent)+'"></div><div class="fsrc">'+n.s+'</div><div class="fh">'+n.h+'</div><div class="ft">'+n.t+'</div></div>').join('');
+  [['SIGNAL',true],['SEE EVERYTHING',false]].forEach((cfg,i)=>{const t=document.createElement('span');t.className='ntab'+(cfg[1]?' on':'');t.textContent=cfg[0];t.onclick=()=>{[...tabs.children].forEach(x=>x.classList.remove('on'));t.classList.add('on');vS.style.display=i===0?'block':'none';vA.style.display=i===1?'block':'none';};tabs.appendChild(t);});
+})();
+// news-volume bars: prior days low, today spike
+(function(){const counts=[2,1,3,2,1,2,4,3,2,5,3,12];const mx=Math.max(...counts);const el=document.getElementById('newsvol');
+  counts.forEach((c,i)=>{const today=i===counts.length-1;el.insertAdjacentHTML('beforeend','<i style="height:'+(c/mx*100)+'%;background:'+(today?'#FFB020':'#2a2740')+'"'+(today?' style2="x"':'')+(today?' ':'')+'></i>');});
+  el.lastChild.style.background='#FFB020';el.lastChild.style.boxShadow='0 0 8px #FFB020';el.lastChild.style.animation='hotpulse 1.1s infinite';})();
+
+// ===== scintillation calm vs hot demo (same icons, sparse/slow vs dense/fast) =====
+(function(){
+  const dot=c=>'<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+c+';box-shadow:0 0 6px '+c+'"></span>';
+  const chev=(c,up)=>'<svg width="16" height="16" viewBox="0 0 16 16"><path d="'+(up?'M 2 13 L 8 4 L 14 13':'M 2 3 L 8 12 L 14 3')+'" stroke="'+c+'" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  document.getElementById('calmDemo').innerHTML=scz(dot('#00FF9C'),'#00FF9C',1)+scz(chev('#00FF9C',true),'#00FF9C',1)+'<span style="color:var(--ink3);font-size:9px">barely sparkling</span>';
+  document.getElementById('hotDemo').innerHTML=scz(dot('#FF2D55'),'#FF2D55',5)+scz(chev('#FF2D55',false),'#FF2D55',5)+'<span style="color:var(--bear);font-size:9px">storming with sparkle</span>';
+})();
+</script>
+<script>
+var COH=[['MU','BULL','#A24BFF',10.70],['NVDA','BULL','#2D9CFF',2.14],['AVGO','BULL','#2D9CFF',1.02],['TSM','WARM','#FFD400',0.34],['AMD','BEAR','#FF8A00',-1.88],['WDC','BULL','#A24BFF',6.92],['SNDK','BULL','#FF3DBE',5.71]];
+(function(){var el=document.getElementById('cohtable');COH.forEach(function(r){var sym=r[0],st=r[1],fam=r[2],chg=r[3],up=chg>=0;
+ var stc=st==='BULL'?'var(--bull)':st==='BEAR'?'var(--bear)':'var(--grey)';
+ var sev=Math.min(5,Math.abs(Math.round(chg))+1),dot='<span class="scz" style="--sc:'+fam+';--spd:'+(1.7-sev*0.2)+'s"><span class="ic"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+fam+';box-shadow:0 0 6px '+fam+'"></span></span></span>';
+ el.insertAdjacentHTML('beforeend','<div class="chrow"><span class="sym">'+sym+'</span>'+dot+'<span class="st" style="color:'+stc+'">'+st+'</span><span class="st" style="color:var(--dim);text-align:right">'+(up?'▲':'▼')+'</span><span class="ch '+(up?'up':'dn')+'">'+(up?'+':'')+chg.toFixed(2)+'%</span></div>');});})();
+(function(){var A=[['MU','volume climax · 1.8× avg','09:31'],['WDC','breakout · LONG flips bull','09:18'],['SEMIS','cohort coincidence · 5/7 up','09:34'],['AMD','LONG rolls bear','08:52']];
+ var el=document.getElementById('alerts');A.forEach(function(a){el.insertAdjacentHTML('beforeend','<div class="alrt"><b>'+a[0]+'</b>'+a[1]+'<span class="at">'+a[2]+'</span></div>');});})();
+(function(){var bands=[['MICRO','#00E5FF',.9],['SHORT','#00FF85',.6],['MID','#FFE500',.3],['LONG','#FF2D55',-.2]];var el=document.getElementById('hubgei');
+ bands.forEach(function(b){var op=(0.45+Math.abs(b[2])*0.55).toFixed(2);el.insertAdjacentHTML('beforeend','<span class="gd"><i style="background:'+b[1]+';opacity:'+op+';box-shadow:0 0 7px '+b[1]+'"></i>'+b[0]+'</span>');});})();
+(function(){var T=[['MU',956.42,10.7],['NVDA',184.3,2.1],['AVGO',342.9,1.0],['AMD',132.1,-1.9],['WDC',78.4,6.9],['BTC',104230,1.9],['ETH',3890,2.7],['SOL',231,.4],['TSM',211.5,.3],['META',744.2,2.1]];
+ var h='';T.forEach(function(t){var up=t[2]>=0;h+='<span><b>'+t[0]+'</b> '+(t[1]>=1000?t[1].toLocaleString():t[1])+' <span class="'+(up?'u':'d')+'">'+(up?'▲':'▼')+Math.abs(t[2])+'%</span></span>';});
+ document.getElementById('tapebar').innerHTML='<div class="tapetrack">'+h+h+'</div>';})();
+(function(){function tk(){document.getElementById('clk').textContent=new Date().toLocaleTimeString('en-US',{hour12:false}).slice(0,8)+' ET';}tk();setInterval(tk,1000);})();
+</script>
+</body></html>
