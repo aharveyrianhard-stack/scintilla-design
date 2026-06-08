@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SCINTILLA · Cockpit Skin v0.1 · canon</title>
+<style>
+:root{
+  --bg:#0A0A0F;--panel:#0D1118;--tile:#0B0F16;--line:#1A1A2A;--line2:#252538;
+  /* CHROME — cyan, never data */ --crk:#00D4FF;
+  /* LOCKED family hues (handoff 2026-06-08) */
+  --trend:#2D9CFF;--momentum:#A24BFF;--structure:#FFD400;--volume:#FF8A00;--volatility:#FF3DBE;
+  /* zone/chrome */ --coincidence:#C8FF00;--liquidity:#18E0C8;--news:#FF5C7A;--macro:#C9A8FF;
+  /* direction only */ --bull:#00FFA3;--bear:#FF3060;
+  /* TF bands (radiation ramp) */ --micro:#00E5FF;--short:#00FFA3;--mid:#FFE500;--long:#FF1A1A;
+  --ink:#E8E8F0;--ink2:#A0A0C0;--ink3:#7A7A95;--dim:#4A4A6A;--mute:#2A2A3A;
+  --es:rgba(0,212,255,.22);--em:rgba(0,212,255,.18);
+  --mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;--sans:ui-sans-serif,-apple-system,"Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{max-width:900px;margin:0 auto;padding:18px 15px 50px;font-size:12px}
+@keyframes breathe{0%,100%{filter:drop-shadow(0 0 3px rgba(0,212,255,.6))}50%{filter:drop-shadow(0 0 9px rgba(0,212,255,1))}}
+@keyframes whisper{0%,100%{opacity:.5}50%{opacity:.95}}
+@keyframes bloom{0%{transform:scale(.35);opacity:.8}100%{transform:scale(2.3);opacity:0}}
+.stamp{font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:13px}
+/* header */
+.head{border:0.8px solid var(--em);box-shadow:inset 0 0 26px rgba(0,212,255,.04);padding:13px 16px;margin-bottom:13px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.br{animation:breathe 4.2s ease-in-out infinite}
+.wm{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.28em;padding-left:.28em;text-shadow:0 0 6px rgba(0,212,255,.32),0 0 18px rgba(0,212,255,.1)}
+/* four-ring geiger */
+.geiger{display:flex;gap:16px;align-items:flex-end}
+.gring{display:flex;flex-direction:column;align-items:center;gap:5px}
+.rings{position:relative;width:26px;height:26px}
+.rings .halo{position:absolute;inset:0;margin:auto;width:14px;height:14px;border-radius:50%;animation:bloom 2.4s ease-out infinite}
+.rings .core{position:absolute;inset:0;margin:auto;border-radius:50%;width:13px;height:13px;border:2px solid;background:transparent}
+.rings .fill{position:absolute;left:50%;bottom:50%;transform:translate(-50%,50%);border-radius:50%}
+.glab{font-family:var(--mono);font-size:6px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase}
+.gv{font-family:var(--mono);font-size:8px;font-weight:700}
+.id{margin-left:auto;text-align:right;font-family:var(--mono)}.id .px{font-size:18px;font-weight:700}.id .ch{font-size:8px;color:var(--ink3)}
+.id .rv{font-size:9px;margin-top:2px}
+/* family legend */
+.fam{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.fc{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--ink2);text-transform:uppercase;border:0.6px solid var(--line2);border-radius:3px;padding:5px 9px}
+.fc i{width:9px;height:9px;border-radius:2px;box-shadow:0 0 6px currentColor}
+.sechead{display:flex;align-items:center;gap:10px;margin:0 0 11px}
+.sechead .n{font-family:var(--mono);font-size:7.5px;color:var(--dim);letter-spacing:.2em}
+.sechead .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase}
+.sechead .rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(162,75,255,.5),transparent)}
+.sechead .meta{font-family:var(--mono);font-size:8px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase}
+.zone{border:0.8px solid rgba(162,75,255,.30);box-shadow:inset 0 0 22px rgba(162,75,255,.05);padding:15px;margin-bottom:22px}
+.rsibox{position:relative;height:240px}.rsibox svg{width:100%;height:100%;display:block}
+.rsileg{display:flex;flex-wrap:wrap;gap:9px;font-family:var(--mono);font-size:7.5px;color:var(--ink3);margin-top:10px}
+.rsileg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:2px;margin-right:4px}
+.note{font-family:var(--mono);font-size:8.5px;color:var(--ink3);line-height:1.7;margin-top:11px;border-top:0.6px solid var(--line);padding-top:10px}.note b{color:var(--momentum)}
+.foot{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--dim);text-align:center;margin-top:18px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="stamp"><span>SCINTILLA · COCKPIT SKIN · CANON</span><span>v0.1 · LOCKED HUES · LIVE</span></div>
+
+<div class="head">
+  <svg class="br" width="22" height="22" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="4" fill="#00D4FF"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85" transform="rotate(120 48 48)"/><path d="M 32.5 27.8 A 22 22 0 0 1 63.5 27.8" stroke="#00D4FF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".70" transform="rotate(240 48 48)"/></svg>
+  <span class="wm">SCINTILLA</span>
+  <div class="geiger" id="geiger"></div>
+  <span class="id"><div class="px" id="px">—</div><div class="ch" id="upd">connecting…</div><div class="rv" id="rvol">RVOL —</div></span>
+</div>
+
+<div class="fam">
+  <span class="fc" style="color:var(--trend)"><i style="background:var(--trend)"></i>Trend</span>
+  <span class="fc" style="color:var(--momentum)"><i style="background:var(--momentum)"></i>Momentum</span>
+  <span class="fc" style="color:var(--structure)"><i style="background:var(--structure)"></i>Structure</span>
+  <span class="fc" style="color:var(--volume)"><i style="background:var(--volume)"></i>Volume</span>
+  <span class="fc" style="color:var(--volatility)"><i style="background:var(--volatility)"></i>Volatility</span>
+  <span class="fc" style="color:var(--crk)"><i style="background:var(--crk)"></i>cyan = chrome</span>
+  <span class="fc" style="color:var(--bull)"><i style="background:var(--bull)"></i>bull</span>
+  <span class="fc" style="color:var(--bear)"><i style="background:var(--bear)"></i>bear</span>
+</div>
+
+<div class="sechead"><span class="n">·</span><span class="t" style="color:var(--momentum)">RSI Ladder · MONO</span><span class="rule"></span><span class="meta">momentum purple · tone = TF speed · dashed = max/min levels</span></div>
+<div class="zone">
+  <div class="rsibox"><svg id="rsi" viewBox="0 0 460 240" preserveAspectRatio="none"></svg></div>
+  <div class="rsileg" id="rsileg"></div>
+  <div class="note">Live from Coinbase. One line per timeframe, all <b>momentum purple</b> — differentiated by <b>tone</b> (light = fast, deep = slow) and opacity, never a rainbow. The <b>dashed horizontals are levels</b> — each TF's rolling max/min, so "RSI riding its own ceiling" reads as a line approaching a level, not a number. Per-TF value chips on the right. This is one component; trend (blue), volume (orange), volatility (magenta) ladders follow the identical grammar in their own hue.</div>
+</div>
+
+<div class="foot">first canon skin · four-ring geiger + locked family hues + mono-purple RSI ladder w/ max-min levels · live · v0.1</div>
+
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+var API='https://api.exchange.coinbase.com/products/BTC-USD';
+function rsiSeries(cl,p){p=p||14;var out=new Array(cl.length).fill(null);if(cl.length<p+1)return out;var g=0,l=0;for(var i=1;i<=p;i++){var d=cl[i]-cl[i-1];if(d>0)g+=d;else l-=d;}g/=p;l/=p;out[p]=100-100/(1+(l===0?1e9:g/l));for(var i=p+1;i<cl.length;i++){var d=cl[i]-cl[i-1];g=(g*(p-1)+(d>0?d:0))/p;l=(l*(p-1)+(d<0?-d:0))/p;out[i]=100-100/(1+(l===0?1e9:g/l));}return out;}
+function resampleClose(cl,k){var out=[];for(var i=0;i+k<=cl.length;i+=k)out.push(cl[i+k-1]);return out;}
+async function bars(g){var r=await fetch(API+'/candles?granularity='+g);var j=await r.json();return j.map(function(c){return {time:c[0],close:c[4],vol:c[5],open:c[3]};}).sort(function(a,b){return a.time-b.time;});}
+// FOUR-RING GEIGER
+(function(){
+ var R=[['MICRO','#00E5FF',0.78],['SHORT','#00FFA3',0.55],['MID','#FFE500',0.30],['LONG','#FF1A1A',0.18]];
+ var h='';
+ R.forEach(function(r,i){var col=r[1],fill=r[2];var sz=(4+fill*9).toFixed(1);
+  h+='<div class="gring"><div class="rings">'
+   +'<div class="halo" style="background:radial-gradient(circle,'+hex(col,.5)+' 0%,'+hex(col,0)+' 66%);animation-delay:'+(i*0.55).toFixed(2)+'s"></div>'
+   +'<div class="core" style="border-color:'+col+';box-shadow:0 0 7px '+col+'"></div>'
+   +'<div class="fill" style="width:'+sz+'px;height:'+sz+'px;background:'+col+';box-shadow:0 0 6px '+col+';animation:whisper 2.4s ease-in-out infinite"></div>'
+   +'</div><div class="glab">'+r[0]+'</div><div class="gv" style="color:'+col+'">'+Math.round(fill*100)+'</div></div>';
+ });
+ document.getElementById('geiger').innerHTML=h;
+})();
+function hex(c,a){var n=parseInt(c.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+// RSI LADDER MONO (purple)
+async function load(){
+ try{
+  var h1=await bars(3600),d1=await bars(86400);
+  var c1=h1.map(function(b){return b.close;}),cd=d1.map(function(b){return b.close;});
+  // TF: [name, closes, tone hex, opacity]
+  var TFS=[
+   ['1H',c1,'#E0C8FF',.55],['2H',resampleClose(c1,2),'#CBA3FF',.6],['3H',resampleClose(c1,3),'#B681FF',.7],
+   ['4H',resampleClose(c1,4),'#A24BFF',1],['1D',cd,'#8A2FE6',.85],['3D',resampleClose(cd,3),'#6E1FB8',.7],['1W',resampleClose(cd,7),'#52168C',.6]];
+  var W=460,H=240,L=60;function y(v){return H-v/100*H;}
+  var g='';
+  // chrome gridlines 30/50/70 (cyan, faint)
+  [30,50,70].forEach(function(v){g+='<line x1="0" y1="'+y(v).toFixed(1)+'" x2="'+(W-L)+'" y2="'+y(v).toFixed(1)+'" stroke="'+(v===50?'rgba(0,212,255,.18)':'rgba(0,212,255,.10)')+'" stroke-width="0.7" stroke-dasharray="'+(v===50?'0':'2 4')+'" vector-effect="non-scaling-stroke"/>';
+   g+='<text x="'+(W-L+4)+'" y="'+(y(v)+3).toFixed(1)+'" font-family="monospace" font-size="7" fill="#4A4A6A">'+v+'</text>';});
+  var leg='';
+  TFS.forEach(function(t){var cl=t[1],tone=t[2],op=t[3];if(cl.length<30)return;
+   var rs=rsiSeries(cl,14);var seg=rs.slice(-50).filter(function(x){return x!=null;});if(!seg.length)return;
+   var n=seg.length;var mx=Math.max.apply(null,seg),mn=Math.min.apply(null,seg),cur=seg[n-1];
+   // dashed max/min LEVELS (his ask)
+   g+='<line x1="0" y1="'+y(mx).toFixed(1)+'" x2="'+(W-L)+'" y2="'+y(mx).toFixed(1)+'" stroke="'+tone+'" stroke-width="0.6" stroke-dasharray="5 4" opacity="'+(op*0.4).toFixed(2)+'" vector-effect="non-scaling-stroke"/>';
+   g+='<line x1="0" y1="'+y(mn).toFixed(1)+'" x2="'+(W-L)+'" y2="'+y(mn).toFixed(1)+'" stroke="'+tone+'" stroke-width="0.6" stroke-dasharray="5 4" opacity="'+(op*0.4).toFixed(2)+'" vector-effect="non-scaling-stroke"/>';
+   // the line
+   var p='';seg.forEach(function(v,i){p+=(i===0?'M':'L')+(i/(n-1)*(W-L)).toFixed(1)+' '+y(v).toFixed(1)+' ';});
+   g+='<path d="'+p+'" stroke="'+tone+'" stroke-width="'+(t[0]==='4H'?2:1.2)+'" fill="none" opacity="'+op+'" vector-effect="non-scaling-stroke"'+(t[0]==='4H'?' style="filter:drop-shadow(0 0 4px '+tone+')"':'')+'/>';
+   // value chip
+   g+='<rect x="'+(W-L+2)+'" y="'+(y(cur)-7).toFixed(1)+'" width="'+(L-4)+'" height="14" rx="3" fill="'+hex(tone,.18)+'" stroke="'+tone+'" stroke-width="0.6"/><text x="'+(W-L/2)+'" y="'+(y(cur)+3).toFixed(1)+'" text-anchor="middle" font-family="monospace" font-size="8" font-weight="700" fill="'+tone+'">'+cur.toFixed(1)+'</text>';
+   leg+='<span><i style="background:'+tone+'"></i>'+t[0]+' '+cur.toFixed(0)+'</span>';
+  });
+  document.getElementById('rsi').innerHTML=g;
+  document.getElementById('rsileg').innerHTML=leg+'<span style="color:var(--dim)">dashed = each TF rolling max/min level</span>';
+  // header live
+  var last=h1[h1.length-1],prev=h1.slice(h1.length-21,h1.length-1);
+  var avg=prev.reduce(function(s,b){return s+b.vol;},0)/prev.length,rv=last.vol/avg;
+  var rl=document.getElementById('rvol');rl.textContent='RVOL '+rv.toFixed(2)+'×';rl.style.color=rv>=2?'#FF8A00':rv>=1.5?'#FFE500':'#A0A0C0';
+  if(!window.__ws)document.getElementById('px').textContent='$'+Math.round(last.close).toLocaleString();
+  document.getElementById('upd').textContent='updated '+new Date().toLocaleTimeString();
+ }catch(e){document.getElementById('upd').textContent='feed error · retrying';}
+}
+function tick(){try{var ws=new WebSocket('wss://ws-feed.exchange.coinbase.com');ws.onopen=function(){ws.send(JSON.stringify({type:'subscribe',product_ids:['BTC-USD'],channels:['ticker']}));};ws.onmessage=function(e){var m=JSON.parse(e.data);if(m.type==='ticker'&&m.price){window.__ws=1;document.getElementById('px').textContent='$'+(+m.price).toLocaleString(undefined,{maximumFractionDigits:0});document.getElementById('upd').textContent='tick '+new Date().toLocaleTimeString();}};ws.onclose=function(){window.__ws=0;setTimeout(tick,5000);};ws.onerror=function(){try{ws.close();}catch(x){}};}catch(e){}}
+function start(){if(!window.LightweightCharts){/* not needed here */}load();setInterval(load,60000);tick();}
+start();
+</script>
+</body>
+</html>
